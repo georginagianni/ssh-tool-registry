@@ -1,0 +1,28 @@
+{
+  "name": "SSH Research Tools Registry",
+  "description": "A curated list of research software repositories with codemeta.json metadata, spanning NLP, corpus analysis, and digital humanities.",
+  "maintainer": "georginagianni",
+  "updated": "2026-04-08",
+  "repositories": [
+    {
+      "repo": "georginagianni/text-analysis-demo",
+      "description": "Reproducible text analysis pipeline for humanities researchers"
+    },
+    {
+      "repo": "proycon/codemetapy",
+      "description": "Python tool for generating and working with codemeta metadata"
+    },
+    {
+      "repo": "proycon/codemeta-server",
+      "description": "SPARQL server for codemeta software metadata with web interface"
+    },
+    {
+      "repo": "citation-file-format/cff-converter-python",
+      "description": "Convert CITATION.cff files to BibTeX, RIS, codemeta, and more"
+    },
+    {
+      "repo": "CLARIAH/tool-discovery",
+      "description": "CLARIAH tool discovery pipeline and source registry harvester"
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSH Tool Search — Demo Page</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f4f3ef;
+         display: flex; align-items: center; justify-content: center;
+         min-height: 100vh; flex-direction: column; gap: 12px; }
+  .demo-label { font-size: 13px; color: #888; }
+</style>
+</head>
+<body>
+
+<div class="demo-label">Paste this button anywhere on your research website:</div>
+
+<!-- ═══════════════════════════════════════════════
+     EMBED START — copy everything below this line
+     and paste into any webpage
+════════════════════════════════════════════════ -->
+<button id="ssh-search-btn" onclick="SSHSearch.open()" style="
+  padding:10px 20px; background:#534AB7; color:#EEEDFE;
+  border:none; border-radius:8px; font-size:14px; font-weight:500;
+  cursor:pointer; font-family:inherit;">
+  Search research tools
+</button>
+
+<style id="ssh-styles">
+#ssh-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:9999;align-items:center;justify-content:center;padding:1rem}
+#ssh-overlay.open{display:flex}
+#ssh-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;
+  border:.5px solid #d8d6cc;overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
+.ssh-header{padding:1.1rem 1.4rem;border-bottom:.5px solid #e8e6df;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ssh-title{font-size:15px;font-weight:500;display:flex;align-items:center;gap:8px;
+  font-family:system-ui,sans-serif}
+.ssh-badge{background:#EEEDFE;color:#3C3489;font-size:11px;padding:3px 8px;
+  border-radius:6px;font-weight:500}
+.ssh-close{background:none;border:none;font-size:18px;cursor:pointer;color:#888;
+  line-height:1;padding:4px;font-family:inherit}
+.ssh-close:hover{color:#333}
+.ssh-body{padding:1.25rem 1.4rem;overflow-y:auto;flex:1}
+.ssh-footer{padding:.9rem 1.4rem;border-top:.5px solid #e8e6df;
+  font-size:12px;color:#aaa;flex-shrink:0;display:flex;align-items:center;
+  justify-content:space-between}
+
+/* Search bar */
+.ssh-search-row{display:flex;gap:8px;margin-bottom:12px}
+#ssh-input{flex:1;padding:8px 12px;border:.5px solid #ccc;border-radius:8px;
+  font-size:14px;font-family:inherit;outline:none}
+#ssh-input:focus{border-color:#7F77DD}
+
+/* Filters */
+.ssh-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.ssh-filter{padding:4px 10px;border:.5px solid #ddd;border-radius:20px;
+  font-size:12px;cursor:pointer;background:#fff;font-family:inherit;
+  color:#555;transition:all .15s}
+.ssh-filter:hover{border-color:#7F77DD;color:#3C3489}
+.ssh-filter.active{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC;font-weight:500}
+
+/* Results */
+.ssh-status{font-size:12px;color:#999;margin-bottom:10px}
+.ssh-results{display:flex;flex-direction:column;gap:8px}
+.ssh-card{border:.5px solid #e0ded7;border-radius:10px;padding:12px 14px;
+  background:#fff;cursor:pointer;transition:border-color .15s}
+.ssh-card:hover{border-color:#7F77DD}
+.ssh-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.ssh-card-name{font-size:14px;font-weight:500;color:#1a1a1a}
+.ssh-card-version{font-size:11px;color:#999;white-space:nowrap;margin-top:2px}
+.ssh-card-desc{font-size:12px;color:#666;line-height:1.5;margin-bottom:8px}
+.ssh-tags{display:flex;flex-wrap:wrap;gap:4px}
+.ssh-tag{font-size:11px;padding:2px 7px;border-radius:4px;font-family:monospace}
+.ssh-tag-lang{background:#E1F5EE;color:#085041}
+.ssh-tag-dep{background:#EEEDFE;color:#3C3489}
+.ssh-tag-domain{background:#FAEEDA;color:#633806}
+.ssh-card-footer{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.ssh-btn-sm{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;
+  border:.5px solid #ccc;background:#f9f8f5;color:#333;font-family:inherit;
+  text-decoration:none;display:inline-block}
+.ssh-btn-sm:hover{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.ssh-btn-launch{background:#534AB7;color:#EEEDFE;border-color:#534AB7}
+.ssh-btn-launch:hover{background:#3C3489;color:#EEEDFE}
+.ssh-empty{text-align:center;padding:2rem;color:#aaa;font-size:13px}
+.ssh-loading{text-align:center;padding:1.5rem;color:#999;font-size:13px}
+.ssh-progress{height:2px;background:#e0ded7;border-radius:2px;overflow:hidden;margin:6px 0}
+.ssh-progress-bar{height:100%;background:#534AB7;border-radius:2px;transition:width .3s}
+</style>
+
+<div id="ssh-overlay">
+  <div id="ssh-modal" role="dialog" aria-label="Research tool search">
+    <div class="ssh-header">
+      <div class="ssh-title">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="4.5" stroke="#534AB7" stroke-width="1.2"/>
+          <path d="M10 10l3 3" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        SSH research tool search
+        <span class="ssh-badge">CodeMeta</span>
+      </div>
+      <button class="ssh-close" onclick="SSHSearch.close()">&#x2715;</button>
+    </div>
+
+    <div class="ssh-body">
+      <div class="ssh-search-row">
+        <input type="text" id="ssh-input" placeholder="Search by name, language, domain, author…"
+               oninput="SSHSearch.search(this.value)"/>
+      </div>
+
+      <div class="ssh-filters" id="ssh-filters">
+        <button class="ssh-filter active" data-filter="all" onclick="SSHSearch.filter('all',this)">All</button>
+        <button class="ssh-filter" data-filter="Python" onclick="SSHSearch.filter('Python',this)">Python</button>
+        <button class="ssh-filter" data-filter="R" onclick="SSHSearch.filter('R',this)">R</button>
+        <button class="ssh-filter" data-filter="NLP" onclick="SSHSearch.filter('NLP',this)">NLP</button>
+        <button class="ssh-filter" data-filter="corpus" onclick="SSHSearch.filter('corpus',this)">Corpus</button>
+        <button class="ssh-filter" data-filter="metadata" onclick="SSHSearch.filter('metadata',this)">Metadata</button>
+      </div>
+
+      <div id="ssh-load-status" class="ssh-loading">
+        <div>Loading registry…</div>
+        <div class="ssh-progress"><div class="ssh-progress-bar" id="ssh-pbar" style="width:0%"></div></div>
+      </div>
+
+      <div id="ssh-status" class="ssh-status" style="display:none"></div>
+      <div class="ssh-results" id="ssh-results"></div>
+    </div>
+
+    <div class="ssh-footer">
+      <span id="ssh-footer-count">—</span>
+      <span>Powered by CodeMeta &amp; Binder</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const SSHSearch = (() => {
+  // ── Registry: add/remove GitHub repos here ──
+  const REGISTRY = [
+    { repo: 'georginagianni/text-analysis-demo' },
+    { repo: 'proycon/codemetapy' },
+    { repo: 'proycon/codemeta-server' },
+    { repo: 'citation-file-format/cff-converter-python' },
+    { repo: 'CLARIAH/tool-discovery' },
+  ];
+
+  let tools = [];
+  let activeFilter = 'all';
+  let searchQuery = '';
+  let loaded = false;
+
+  async function fetchMeta(repo) {
+    const [owner, name] = repo.split('/');
+    for (const branch of ['main', 'master']) {
+      try {
+        const r = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/codemeta.json`);
+        if (r.ok) return await r.json();
+      } catch(e) {}
+    }
+    // fallback: GitHub API
+    try {
+      const r = await fetch(`https://api.github.com/repos/${repo}`);
+      if (r.ok) {
+        const d = await r.json();
+        return {
+          name: d.name, description: d.description || '',
+          version: '—', license: d.license?.spdx_id || '—',
+          programmingLanguage: d.language ? [{name:d.language}] : [],
+          runtimePlatform: d.language || '',
+          softwareRequirements: [],
+          codeRepository: d.html_url,
+          author: [],
+          keywords: [],
+          _fallback: true
+        };
+      }
+    } catch(e) {}
+    return null;
+  }
+
+  function normLang(raw) {
+    if (!raw) return [];
+    const arr = Array.isArray(raw) ? raw : [raw];
+    return arr.map(l => typeof l === 'string' ? l : l?.name || '').filter(Boolean);
+  }
+
+  function normAuthor(raw) {
+    if (!raw) return '—';
+    const arr = Array.isArray(raw) ? raw : [raw];
+    return arr.map(a => {
+      if (typeof a === 'string') return a;
+      const g = a.givenName || ''; const f = a.familyName || '';
+      return (g + ' ' + f).trim() || a.name || '—';
+    }).join(', ');
+  }
+
+  function normKeywords(raw) {
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    return raw.split(',').map(k => k.trim());
+  }
+
+  function binderUrl(meta) {
+    const r = meta.codeRepository || '';
+    if (!r.includes('github.com')) return null;
+    const parts = r.replace(/\/$/, '').split('/');
+    return `https://mybinder.org/v2/gh/${parts[parts.length-2]}/${parts[parts.length-1]}/HEAD`;
+  }
+
+  function renderCard(tool) {
+    const langs = normLang(tool.programmingLanguage);
+    const keywords = normKeywords(tool.keywords || []).slice(0, 3);
+    const author = normAuthor(tool.author);
+    const binder = binderUrl(tool);
+    const repoUrl = tool.codeRepository || `https://github.com/${tool._repo}`;
+
+    return `<div class="ssh-card" onclick="">
+      <div class="ssh-card-top">
+        <div>
+          <div class="ssh-card-name">${tool.name || tool._repo}</div>
+          <div class="ssh-card-version">v${tool.version || '—'} &nbsp;·&nbsp; ${author}</div>
+        </div>
+      </div>
+      <div class="ssh-card-desc">${(tool.description||'').slice(0,160)}${(tool.description||'').length>160?'…':''}</div>
+      <div class="ssh-tags">
+        ${langs.map(l=>`<span class="ssh-tag ssh-tag-lang">${l}</span>`).join('')}
+        ${keywords.map(k=>`<span class="ssh-tag ssh-tag-domain">${k}</span>`).join('')}
+        ${tool.license && tool.license !== '—' ? `<span class="ssh-tag ssh-tag-dep">${tool.license.split('/').pop()}</span>` : ''}
+      </div>
+      <div class="ssh-card-footer">
+        <a class="ssh-btn-sm" href="${repoUrl}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
+        ${binder ? `<a class="ssh-btn-sm ssh-btn-launch" href="${binder}" target="_blank" onclick="event.stopPropagation()">Launch in Binder</a>` : ''}
+      </div>
+    </div>`;
+  }
+
+  function matches(tool, query, filter) {
+    const hay = [
+      tool.name, tool.description,
+      normLang(tool.programmingLanguage).join(' '),
+      normAuthor(tool.author),
+      normKeywords(tool.keywords||[]).join(' '),
+      (tool.softwareRequirements||[]).map(r=>r.name||r).join(' '),
+    ].join(' ').toLowerCase();
+
+    const q = query.toLowerCase().trim();
+    const qMatch = !q || hay.includes(q);
+
+    if (filter === 'all') return qMatch;
+    return qMatch && hay.includes(filter.toLowerCase());
+  }
+
+  function renderResults() {
+    const filtered = tools.filter(t => matches(t, searchQuery, activeFilter));
+    const el = document.getElementById('ssh-results');
+    const status = document.getElementById('ssh-status');
+    const footer = document.getElementById('ssh-footer-count');
+
+    status.style.display = 'block';
+    status.textContent = `${filtered.length} of ${tools.length} tools`;
+    footer.textContent = `${tools.length} tools indexed`;
+
+    if (!filtered.length) {
+      el.innerHTML = `<div class="ssh-empty">No tools match "${searchQuery || activeFilter}".<br>Try a different search term.</div>`;
+      return;
+    }
+    el.innerHTML = filtered.map(renderCard).join('');
+  }
+
+  async function load() {
+    const pbar = document.getElementById('ssh-pbar');
+    const loadEl = document.getElementById('ssh-load-status');
+    tools = [];
+    for (let i = 0; i < REGISTRY.length; i++) {
+      pbar.style.width = Math.round((i / REGISTRY.length) * 90) + '%';
+      const meta = await fetchMeta(REGISTRY[i].repo);
+      if (meta) { meta._repo = REGISTRY[i].repo; tools.push(meta); }
+    }
+    pbar.style.width = '100%';
+    await new Promise(r => setTimeout(r, 300));
+    loadEl.style.display = 'none';
+    loaded = true;
+    renderResults();
+  }
+
+  return {
+    open() {
+      document.getElementById('ssh-overlay').classList.add('open');
+      document.getElementById('ssh-input').focus();
+      if (!loaded) load();
+    },
+    close() {
+      document.getElementById('ssh-overlay').classList.remove('open');
+    },
+    search(q) {
+      searchQuery = q;
+      if (loaded) renderResults();
+    },
+    filter(f, btn) {
+      activeFilter = f;
+      document.querySelectorAll('.ssh-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (loaded) renderResults();
+    }
+  };
+})();
+
+// Close on backdrop click
+document.getElementById('ssh-overlay').addEventListener('click', e => {
+  if (e.target.id === 'ssh-overlay') SSHSearch.close();
+});
+</script>
+<!-- ═══════════════════════════════════════════
+     EMBED END
+════════════════════════════════════════════ -->
+
+</body>
+</html>
