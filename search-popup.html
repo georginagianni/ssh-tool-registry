@@ -3,316 +3,369 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSH Tool Search — Demo Page</title>
+<title>SSH Research Discovery Portal</title>
 <style>
-  body { font-family: system-ui, sans-serif; background: #f4f3ef;
-         display: flex; align-items: center; justify-content: center;
-         min-height: 100vh; flex-direction: column; gap: 12px; }
-  .demo-label { font-size: 13px; color: #888; }
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f4f3ef;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;flex-direction:column;gap:12px}
+  .demo-label{font-size:13px;color:#888}
 </style>
 </head>
 <body>
-
-<div class="demo-label">Paste this button anywhere on your research website:</div>
-
-<!-- ═══════════════════════════════════════════════
-     EMBED START — copy everything below this line
-     and paste into any webpage
-════════════════════════════════════════════════ -->
-<button id="ssh-search-btn" onclick="SSHSearch.open()" style="
-  padding:10px 20px; background:#534AB7; color:#EEEDFE;
-  border:none; border-radius:8px; font-size:14px; font-weight:500;
-  cursor:pointer; font-family:inherit;">
-  Search research tools
+<div class="demo-label">SSH Research Discovery Portal</div>
+<button onclick="SSHPortal.open()" style="padding:10px 22px;background:#534AB7;color:#EEEDFE;
+  border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">
+  Search research sources
 </button>
 
-<style id="ssh-styles">
-#ssh-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
-  z-index:9999;align-items:center;justify-content:center;padding:1rem}
-#ssh-overlay.open{display:flex}
-#ssh-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;
+<style>
+#sshp-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;
+  align-items:center;justify-content:center;padding:1rem}
+#sshp-ov.open{display:flex}
+#sshp-m{background:#fff;border-radius:14px;width:100%;max-width:660px;
   border:.5px solid #d8d6cc;overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
-.ssh-header{padding:1.1rem 1.4rem;border-bottom:.5px solid #e8e6df;
+.sh{padding:1rem 1.4rem;border-bottom:.5px solid #e8e6df;
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.ssh-title{font-size:15px;font-weight:500;display:flex;align-items:center;gap:8px;
-  font-family:system-ui,sans-serif}
-.ssh-badge{background:#EEEDFE;color:#3C3489;font-size:11px;padding:3px 8px;
-  border-radius:6px;font-weight:500}
-.ssh-close{background:none;border:none;font-size:18px;cursor:pointer;color:#888;
-  line-height:1;padding:4px;font-family:inherit}
-.ssh-close:hover{color:#333}
-.ssh-body{padding:1.25rem 1.4rem;overflow-y:auto;flex:1}
-.ssh-footer{padding:.9rem 1.4rem;border-top:.5px solid #e8e6df;
-  font-size:12px;color:#aaa;flex-shrink:0;display:flex;align-items:center;
-  justify-content:space-between}
-
-/* Search bar */
-.ssh-search-row{display:flex;gap:8px;margin-bottom:12px}
-#ssh-input{flex:1;padding:8px 12px;border:.5px solid #ccc;border-radius:8px;
-  font-size:14px;font-family:inherit;outline:none}
-#ssh-input:focus{border-color:#7F77DD}
-
-/* Filters */
-.ssh-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.ssh-filter{padding:4px 10px;border:.5px solid #ddd;border-radius:20px;
-  font-size:12px;cursor:pointer;background:#fff;font-family:inherit;
-  color:#555;transition:all .15s}
-.ssh-filter:hover{border-color:#7F77DD;color:#3C3489}
-.ssh-filter.active{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC;font-weight:500}
-
-/* Results */
-.ssh-status{font-size:12px;color:#999;margin-bottom:10px}
-.ssh-results{display:flex;flex-direction:column;gap:8px}
-.ssh-card{border:.5px solid #e0ded7;border-radius:10px;padding:12px 14px;
-  background:#fff;cursor:pointer;transition:border-color .15s}
-.ssh-card:hover{border-color:#7F77DD}
-.ssh-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
-.ssh-card-name{font-size:14px;font-weight:500;color:#1a1a1a}
-.ssh-card-version{font-size:11px;color:#999;white-space:nowrap;margin-top:2px}
-.ssh-card-desc{font-size:12px;color:#666;line-height:1.5;margin-bottom:8px}
-.ssh-tags{display:flex;flex-wrap:wrap;gap:4px}
-.ssh-tag{font-size:11px;padding:2px 7px;border-radius:4px;font-family:monospace}
-.ssh-tag-lang{background:#E1F5EE;color:#085041}
-.ssh-tag-dep{background:#EEEDFE;color:#3C3489}
-.ssh-tag-domain{background:#FAEEDA;color:#633806}
-.ssh-card-footer{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.ssh-btn-sm{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;
+.st{font-size:15px;font-weight:500;display:flex;align-items:center;gap:8px}
+.sbadge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500;background:#EEEDFE;color:#3C3489}
+.scl{background:none;border:none;font-size:18px;cursor:pointer;color:#888;padding:4px}
+.scl:hover{color:#333}
+.stabs{display:flex;border-bottom:.5px solid #e8e6df;flex-shrink:0;background:#fafaf8}
+.stab{flex:1;padding:9px 4px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;
+  border:none;background:none;color:#999;font-family:inherit;border-bottom:2px solid transparent;transition:all .15s}
+.stab:hover{color:#534AB7}
+.stab.active{color:#534AB7;border-bottom-color:#534AB7;background:#fff}
+.stab span{display:block;font-size:15px;margin-bottom:1px}
+.sbody{padding:1rem 1.4rem;overflow-y:auto;flex:1}
+.srow{display:flex;gap:8px;margin-bottom:10px}
+#sshp-q{flex:1;padding:8px 12px;border:.5px solid #ccc;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
+#sshp-q:focus{border-color:#7F77DD}
+.sbtn{padding:8px 16px;background:#534AB7;color:#EEEDFE;border:none;border-radius:8px;
+  font-size:13px;cursor:pointer;font-family:inherit}
+.sbtn:hover{background:#3C3489}
+.sbtn:disabled{opacity:.5;cursor:not-allowed}
+.spills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.spill{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:500}
+.p0{background:#EEEDFE;color:#3C3489}
+.p1{background:#FAEEDA;color:#633806}
+.p2{background:#E6F1FB;color:#0C447C}
+.p3{background:#FCEBEB;color:#791F1F}
+.p4{background:#E1F5EE;color:#085041}
+.sload{text-align:center;padding:1.2rem;color:#999;font-size:13px;display:none}
+.sprogw{height:2px;background:#e0ded7;border-radius:2px;overflow:hidden;margin:6px 0 0}
+.sprog{height:100%;background:#534AB7;border-radius:2px;transition:width .4s}
+.sstat{font-size:12px;color:#999;margin-bottom:8px}
+.sres{display:flex;flex-direction:column;gap:8px}
+.scard{border:.5px solid #e0ded7;border-radius:10px;padding:11px 13px;background:#fff;transition:border-color .15s}
+.scard:hover{border-color:#7F77DD}
+.sct{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px}
+.scn{font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.4}
+.scm{font-size:11px;color:#999;margin-top:2px}
+.scd{font-size:12px;color:#666;line-height:1.5;margin-bottom:7px}
+.scf{display:flex;gap:5px;flex-wrap:wrap}
+.sa{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;
   border:.5px solid #ccc;background:#f9f8f5;color:#333;font-family:inherit;
-  text-decoration:none;display:inline-block}
-.ssh-btn-sm:hover{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
-.ssh-btn-launch{background:#534AB7;color:#EEEDFE;border-color:#534AB7}
-.ssh-btn-launch:hover{background:#3C3489;color:#EEEDFE}
-.ssh-empty{text-align:center;padding:2rem;color:#aaa;font-size:13px}
-.ssh-loading{text-align:center;padding:1.5rem;color:#999;font-size:13px}
-.ssh-progress{height:2px;background:#e0ded7;border-radius:2px;overflow:hidden;margin:6px 0}
-.ssh-progress-bar{height:100%;background:#534AB7;border-radius:2px;transition:width .3s}
+  text-decoration:none;display:inline-block;transition:all .15s}
+.sa:hover{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.saL{background:#534AB7;color:#EEEDFE;border-color:#534AB7}
+.saL:hover{background:#3C3489;color:#EEEDFE}
+.sempty{text-align:center;padding:2rem;color:#aaa;font-size:13px;line-height:1.7}
+.shint{font-size:12px;color:#aaa;line-height:1.6;padding:1rem;
+  background:#f9f8f5;border-radius:8px;border:.5px solid #e8e6df}
+.sfooter{padding:.8rem 1.4rem;border-top:.5px solid #e8e6df;
+  font-size:11px;color:#aaa;flex-shrink:0;display:flex;justify-content:space-between}
 </style>
 
-<div id="ssh-overlay">
-  <div id="ssh-modal" role="dialog" aria-label="Research tool search">
-    <div class="ssh-header">
-      <div class="ssh-title">
+<div id="sshp-ov">
+  <div id="sshp-m" role="dialog" aria-label="SSH Research Discovery Portal">
+    <div class="sh">
+      <div class="st">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <circle cx="6.5" cy="6.5" r="4.5" stroke="#534AB7" stroke-width="1.2"/>
           <path d="M10 10l3 3" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
-        SSH research tool search
-        <span class="ssh-badge">CodeMeta</span>
+        SSH research discovery portal
+        <span class="sbadge">5 sources</span>
       </div>
-      <button class="ssh-close" onclick="SSHSearch.close()">&#x2715;</button>
+      <button class="scl" onclick="SSHPortal.close()">&#x2715;</button>
     </div>
 
-    <div class="ssh-body">
-      <div class="ssh-search-row">
-        <input type="text" id="ssh-input" placeholder="Search by name, language, domain, author…"
-               oninput="SSHSearch.search(this.value)"/>
-      </div>
-
-      <div class="ssh-filters" id="ssh-filters">
-        <button class="ssh-filter active" data-filter="all" onclick="SSHSearch.filter('all',this)">All</button>
-        <button class="ssh-filter" data-filter="Python" onclick="SSHSearch.filter('Python',this)">Python</button>
-        <button class="ssh-filter" data-filter="R" onclick="SSHSearch.filter('R',this)">R</button>
-        <button class="ssh-filter" data-filter="NLP" onclick="SSHSearch.filter('NLP',this)">NLP</button>
-        <button class="ssh-filter" data-filter="corpus" onclick="SSHSearch.filter('corpus',this)">Corpus</button>
-        <button class="ssh-filter" data-filter="metadata" onclick="SSHSearch.filter('metadata',this)">Metadata</button>
-      </div>
-
-      <div id="ssh-load-status" class="ssh-loading">
-        <div>Loading registry…</div>
-        <div class="ssh-progress"><div class="ssh-progress-bar" id="ssh-pbar" style="width:0%"></div></div>
-      </div>
-
-      <div id="ssh-status" class="ssh-status" style="display:none"></div>
-      <div class="ssh-results" id="ssh-results"></div>
+    <div class="stabs">
+      <button class="stab active" id="tab-tools" onclick="SSHPortal.tab('tools')"><span>&#128295;</span>Tools</button>
+      <button class="stab" id="tab-archives" onclick="SSHPortal.tab('archives')"><span>&#127963;</span>Archives</button>
+      <button class="stab" id="tab-literature" onclick="SSHPortal.tab('literature')"><span>&#128218;</span>Literature</button>
+      <button class="stab" id="tab-data" onclick="SSHPortal.tab('data')"><span>&#128202;</span>Research data</button>
     </div>
 
-    <div class="ssh-footer">
-      <span id="ssh-footer-count">—</span>
-      <span>Powered by CodeMeta &amp; Binder</span>
+    <div class="sbody">
+      <div class="srow">
+        <input type="text" id="sshp-q" placeholder="Search…"
+          onkeydown="if(event.key==='Enter')SSHPortal.search()"/>
+        <button class="sbtn" id="sshp-sb" onclick="SSHPortal.search()">Search</button>
+      </div>
+      <div class="spills" id="sshp-pills"></div>
+      <div class="sload" id="sshp-load">
+        Searching…
+        <div class="sprogw"><div class="sprog" id="sshp-pb" style="width:0%"></div></div>
+      </div>
+      <div class="sstat" id="sshp-stat"></div>
+      <div class="sres" id="sshp-res"></div>
+    </div>
+
+    <div class="sfooter">
+      <span id="sshp-fl">Select a tab and search</span>
+      <span>Europeana · Zenodo · Gutenberg · DANS · GitHub</span>
     </div>
   </div>
 </div>
 
 <script>
-const SSHSearch = (() => {
-  // ── Registry: add/remove GitHub repos here ──
-  const REGISTRY = [
-    { repo: 'georginagianni/text-analysis-demo' },
-    { repo: 'proycon/codemetapy' },
-    { repo: 'proycon/codemeta-server' },
-    { repo: 'citation-file-format/cff-converter-python' },
-    { repo: 'CLARIAH/tool-discovery' },
-  ];
+const EK = 'borewashropp';
+const REPOS = [
+  'georginagianni/text-analysis-demo','proycon/codemetapy',
+  'proycon/codemeta-server','citation-file-format/cff-converter-python','CLARIAH/tool-discovery'
+];
+const TABS = {
+  tools:      {pills:[['GitHub registry','p0']]},
+  archives:   {pills:[['Europeana','p1'],['DANS EASY','p2']]},
+  literature: {pills:[['Project Gutenberg','p3']]},
+  data:       {pills:[['Zenodo','p4']]},
+};
+const HINTS = {
+  tools:'Search tools by name, language, or domain. All tools can launch directly in Binder.',
+  archives:'Search 50M+ cultural heritage objects from Europeana and Dutch datasets from DANS EASY.',
+  literature:'Search 70,000+ free ebooks from Project Gutenberg by title, author, or subject.',
+  data:'Search research datasets, software, and publications archived on Zenodo.',
+};
 
-  let tools = [];
-  let activeFilter = 'all';
-  let searchQuery = '';
-  let loaded = false;
+let curTab='tools', cache=null;
 
-  async function fetchMeta(repo) {
-    const [owner, name] = repo.split('/');
-    for (const branch of ['main', 'master']) {
-      try {
-        const r = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/codemeta.json`);
-        if (r.ok) return await r.json();
-      } catch(e) {}
+const SSHPortal={
+  open(){
+    document.getElementById('sshp-ov').classList.add('open');
+    document.getElementById('sshp-q').focus();
+    this.tab('tools',true);
+  },
+  close(){ document.getElementById('sshp-ov').classList.remove('open'); },
+  tab(t,force){
+    if(t===curTab&&!force)return;
+    curTab=t;
+    document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+t).classList.add('active');
+    document.getElementById('sshp-q').value='';
+    document.getElementById('sshp-res').innerHTML=`<div class="shint">${HINTS[t]}</div>`;
+    document.getElementById('sshp-stat').textContent='';
+    document.getElementById('sshp-pills').innerHTML=
+      TABS[t].pills.map(([l,c])=>`<span class="spill ${c}">${l}</span>`).join('');
+    if(t==='tools'&&!cache)this.loadTools();
+    else if(t==='tools'&&cache)this.renderTools('');
+  },
+  async search(){
+    const q=document.getElementById('sshp-q').value.trim();
+    if(!q)return;
+    document.getElementById('sshp-sb').disabled=true;
+    this.loading(true);
+    try{
+      if(curTab==='tools')     await this.searchTools(q);
+      if(curTab==='archives')  await this.searchArchives(q);
+      if(curTab==='literature')await this.searchLit(q);
+      if(curTab==='data')      await this.searchData(q);
+    }catch(e){ this.err('Search failed. Please try again.'); }
+    this.loading(false);
+    document.getElementById('sshp-sb').disabled=false;
+  },
+
+  async loadTools(){
+    this.loading(true);
+    const pb=document.getElementById('sshp-pb');
+    const ms=[];
+    for(let i=0;i<REPOS.length;i++){
+      pb.style.width=Math.round(i/REPOS.length*90)+'%';
+      const m=await fetchMeta(REPOS[i]);
+      if(m)ms.push(m);
     }
-    // fallback: GitHub API
-    try {
-      const r = await fetch(`https://api.github.com/repos/${repo}`);
-      if (r.ok) {
-        const d = await r.json();
-        return {
-          name: d.name, description: d.description || '',
-          version: '—', license: d.license?.spdx_id || '—',
-          programmingLanguage: d.language ? [{name:d.language}] : [],
-          runtimePlatform: d.language || '',
-          softwareRequirements: [],
-          codeRepository: d.html_url,
-          author: [],
-          keywords: [],
-          _fallback: true
-        };
-      }
-    } catch(e) {}
-    return null;
-  }
-
-  function normLang(raw) {
-    if (!raw) return [];
-    const arr = Array.isArray(raw) ? raw : [raw];
-    return arr.map(l => typeof l === 'string' ? l : l?.name || '').filter(Boolean);
-  }
-
-  function normAuthor(raw) {
-    if (!raw) return '—';
-    const arr = Array.isArray(raw) ? raw : [raw];
-    return arr.map(a => {
-      if (typeof a === 'string') return a;
-      const g = a.givenName || ''; const f = a.familyName || '';
-      return (g + ' ' + f).trim() || a.name || '—';
-    }).join(', ');
-  }
-
-  function normKeywords(raw) {
-    if (!raw) return [];
-    if (Array.isArray(raw)) return raw;
-    return raw.split(',').map(k => k.trim());
-  }
-
-  function binderUrl(meta) {
-    const r = meta.codeRepository || '';
-    if (!r.includes('github.com')) return null;
-    const parts = r.replace(/\/$/, '').split('/');
-    return `https://mybinder.org/v2/gh/${parts[parts.length-2]}/${parts[parts.length-1]}/HEAD`;
-  }
-
-  function renderCard(tool) {
-    const langs = normLang(tool.programmingLanguage);
-    const keywords = normKeywords(tool.keywords || []).slice(0, 3);
-    const author = normAuthor(tool.author);
-    const binder = binderUrl(tool);
-    const repoUrl = tool.codeRepository || `https://github.com/${tool._repo}`;
-
-    return `<div class="ssh-card" onclick="">
-      <div class="ssh-card-top">
-        <div>
-          <div class="ssh-card-name">${tool.name || tool._repo}</div>
-          <div class="ssh-card-version">v${tool.version || '—'} &nbsp;·&nbsp; ${author}</div>
+    pb.style.width='100%';
+    cache=ms;
+    this.loading(false);
+    this.renderTools('');
+  },
+  async searchTools(q){
+    if(!cache)await this.loadTools();
+    else this.renderTools(q);
+  },
+  renderTools(q){
+    const fl=cache.filter(t=>{
+      const h=[t.name,t.description,
+        normL(t.programmingLanguage).join(' '),
+        normK(t.keywords||[]).join(' ')].join(' ').toLowerCase();
+      return !q||h.includes(q.toLowerCase());
+    });
+    document.getElementById('sshp-stat').textContent=
+      q?`${fl.length} tools matching "${q}"`:
+        `${fl.length} tools indexed`;
+    document.getElementById('sshp-fl').textContent=`${fl.length} tools`;
+    if(!fl.length){
+      document.getElementById('sshp-res').innerHTML=
+        `<div class="sempty">No tools found for "${q}".</div>`;return;
+    }
+    document.getElementById('sshp-res').innerHTML=fl.map(t=>{
+      const langs=normL(t.programmingLanguage);
+      const bu=binderU(t);
+      const repo=t.codeRepository||`https://github.com/${t._r}`;
+      return `<div class="scard">
+        <div class="sct">
+          <div><div class="scn">${t.name||t._r}</div>
+          <div class="scm">${langs.join(',')||'—'} · v${t.version||'—'}</div></div>
+          <span class="spill p0">GitHub</span>
         </div>
-      </div>
-      <div class="ssh-card-desc">${(tool.description||'').slice(0,160)}${(tool.description||'').length>160?'…':''}</div>
-      <div class="ssh-tags">
-        ${langs.map(l=>`<span class="ssh-tag ssh-tag-lang">${l}</span>`).join('')}
-        ${keywords.map(k=>`<span class="ssh-tag ssh-tag-domain">${k}</span>`).join('')}
-        ${tool.license && tool.license !== '—' ? `<span class="ssh-tag ssh-tag-dep">${tool.license.split('/').pop()}</span>` : ''}
-      </div>
-      <div class="ssh-card-footer">
-        <a class="ssh-btn-sm" href="${repoUrl}" target="_blank" onclick="event.stopPropagation()">GitHub</a>
-        ${binder ? `<a class="ssh-btn-sm ssh-btn-launch" href="${binder}" target="_blank" onclick="event.stopPropagation()">Launch in Binder</a>` : ''}
-      </div>
-    </div>`;
-  }
+        <div class="scd">${(t.description||'').slice(0,160)}${(t.description||'').length>160?'…':''}</div>
+        <div class="scf">
+          <a class="sa" href="${repo}" target="_blank">GitHub</a>
+          ${bu?`<a class="sa saL" href="${bu}" target="_blank">Launch in Binder</a>`:''}
+        </div></div>`;
+    }).join('');
+  },
 
-  function matches(tool, query, filter) {
-    const hay = [
-      tool.name, tool.description,
-      normLang(tool.programmingLanguage).join(' '),
-      normAuthor(tool.author),
-      normKeywords(tool.keywords||[]).join(' '),
-      (tool.softwareRequirements||[]).map(r=>r.name||r).join(' '),
-    ].join(' ').toLowerCase();
+  async searchArchives(q){
+    const [eu,dans]=await Promise.allSettled([searchEuropeana(q),searchDANS(q)]);
+    this.renderCards([
+      ...(eu.status==='fulfilled'?eu.value:[]),
+      ...(dans.status==='fulfilled'?dans.value:[]),
+    ],q);
+  },
+  async searchLit(q){
+    this.renderCards(await searchGutenberg(q),q);
+  },
+  async searchData(q){
+    this.renderCards(await searchZenodo(q),q);
+  },
 
-    const q = query.toLowerCase().trim();
-    const qMatch = !q || hay.includes(q);
-
-    if (filter === 'all') return qMatch;
-    return qMatch && hay.includes(filter.toLowerCase());
-  }
-
-  function renderResults() {
-    const filtered = tools.filter(t => matches(t, searchQuery, activeFilter));
-    const el = document.getElementById('ssh-results');
-    const status = document.getElementById('ssh-status');
-    const footer = document.getElementById('ssh-footer-count');
-
-    status.style.display = 'block';
-    status.textContent = `${filtered.length} of ${tools.length} tools`;
-    footer.textContent = `${tools.length} tools indexed`;
-
-    if (!filtered.length) {
-      el.innerHTML = `<div class="ssh-empty">No tools match "${searchQuery || activeFilter}".<br>Try a different search term.</div>`;
-      return;
+  renderCards(items,q){
+    const pill={
+      'Europeana':'p1','DANS EASY':'p2',
+      'Project Gutenberg':'p3','Zenodo':'p4'
+    };
+    document.getElementById('sshp-stat').textContent=`${items.length} results for "${q}"`;
+    document.getElementById('sshp-fl').textContent=`${items.length} results`;
+    if(!items.length){
+      document.getElementById('sshp-res').innerHTML=
+        `<div class="sempty">No results for "${q}".<br>Try different keywords.</div>`;return;
     }
-    el.innerHTML = filtered.map(renderCard).join('');
+    document.getElementById('sshp-res').innerHTML=items.map(r=>`
+      <div class="scard">
+        <div class="sct">
+          <div><div class="scn">${r.title}</div>
+          <div class="scm">${r.meta||''}</div></div>
+          <span class="spill ${pill[r.source]||'p0'}">${r.source}</span>
+        </div>
+        <div class="scd">${(r.desc||'').replace(/<[^>]+>/g,'').slice(0,180)}${(r.desc||'').length>180?'…':''}</div>
+        <div class="scf">
+          <a class="sa" href="${r.url}" target="_blank">View</a>
+          ${r.dl?`<a class="sa" href="${r.dl}" target="_blank">Download</a>`:''}
+        </div></div>`).join('');
+  },
+
+  loading(on){
+    document.getElementById('sshp-load').style.display=on?'block':'none';
+    if(on)document.getElementById('sshp-pb').style.width='30%';
+  },
+  err(m){
+    document.getElementById('sshp-res').innerHTML=`<div class="sempty">${m}</div>`;
   }
+};
 
-  async function load() {
-    const pbar = document.getElementById('ssh-pbar');
-    const loadEl = document.getElementById('ssh-load-status');
-    tools = [];
-    for (let i = 0; i < REGISTRY.length; i++) {
-      pbar.style.width = Math.round((i / REGISTRY.length) * 90) + '%';
-      const meta = await fetchMeta(REGISTRY[i].repo);
-      if (meta) { meta._repo = REGISTRY[i].repo; tools.push(meta); }
-    }
-    pbar.style.width = '100%';
-    await new Promise(r => setTimeout(r, 300));
-    loadEl.style.display = 'none';
-    loaded = true;
-    renderResults();
+async function fetchMeta(repo){
+  for(const b of['main','master']){
+    try{
+      const r=await fetch(`https://raw.githubusercontent.com/${repo}/${b}/codemeta.json`);
+      if(r.ok){const m=await r.json();m._r=repo;return m;}
+    }catch(e){}
   }
+  try{
+    const r=await fetch(`https://api.github.com/repos/${repo}`);
+    if(r.ok){const d=await r.json();
+      return{name:d.name,description:d.description||'',version:'—',
+        programmingLanguage:d.language?[{name:d.language}]:[],
+        codeRepository:d.html_url,keywords:[],_r:repo};}
+  }catch(e){}
+  return null;
+}
 
-  return {
-    open() {
-      document.getElementById('ssh-overlay').classList.add('open');
-      document.getElementById('ssh-input').focus();
-      if (!loaded) load();
-    },
-    close() {
-      document.getElementById('ssh-overlay').classList.remove('open');
-    },
-    search(q) {
-      searchQuery = q;
-      if (loaded) renderResults();
-    },
-    filter(f, btn) {
-      activeFilter = f;
-      document.querySelectorAll('.ssh-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (loaded) renderResults();
-    }
-  };
-})();
+async function searchEuropeana(q){
+  try{
+    const r=await fetch(`https://api.europeana.eu/record/v2/search.json?query=${encodeURIComponent(q)}&rows=5&profile=minimal&wskey=${EK}`);
+    const d=await r.json();
+    return(d.items||[]).map(i=>({
+      title:Array.isArray(i.title)?i.title[0]:(i.title||'Untitled'),
+      desc:Array.isArray(i.dcDescription)?i.dcDescription[0]:'',
+      meta:Array.isArray(i.dataProvider)?i.dataProvider[0]:'',
+      url:`https://www.europeana.eu/item${i.id}`,
+      source:'Europeana'
+    }));
+  }catch(e){return[];}
+}
 
-// Close on backdrop click
-document.getElementById('ssh-overlay').addEventListener('click', e => {
-  if (e.target.id === 'ssh-overlay') SSHSearch.close();
+async function searchDANS(q){
+  try{
+    const r=await fetch(`https://easy.dans.knaw.nl/solr/search?q=${encodeURIComponent(q)}&rows=4&wt=json`);
+    const d=await r.json();
+    return(d.response?.docs||[]).map(doc=>({
+      title:doc.dc_title?.[0]||'Untitled',
+      desc:doc.dc_description?.[0]||'',
+      meta:doc.dc_creator?.[0]||'',
+      url:`https://easy.dans.knaw.nl/ui/datasets/id/${doc.sid}`,
+      source:'DANS EASY'
+    }));
+  }catch(e){return[];}
+}
+
+async function searchGutenberg(q){
+  try{
+    const r=await fetch(`https://gutendex.com/books?search=${encodeURIComponent(q)}`);
+    const d=await r.json();
+    return(d.results||[]).slice(0,6).map(b=>({
+      title:b.title,
+      desc:`By ${b.authors.map(a=>a.name).join(', ')||'Unknown'}. Languages: ${b.languages.join(', ')}.`,
+      meta:`${(b.download_count||0).toLocaleString()} downloads`,
+      url:`https://www.gutenberg.org/ebooks/${b.id}`,
+      dl:b.formats?.['text/html']||b.formats?.['application/epub+zip']||'',
+      source:'Project Gutenberg'
+    }));
+  }catch(e){return[];}
+}
+
+async function searchZenodo(q){
+  try{
+    const r=await fetch(`https://zenodo.org/api/records?q=${encodeURIComponent(q)}&size=6&sort=mostrecent`);
+    const d=await r.json();
+    return(d.hits?.hits||[]).map(rec=>({
+      title:rec.metadata?.title||'Untitled',
+      desc:rec.metadata?.description||'',
+      meta:`${rec.metadata?.creators?.[0]?.name||''} · ${rec.metadata?.publication_date||''}`,
+      url:rec.links?.html||`https://zenodo.org/record/${rec.id}`,
+      source:'Zenodo'
+    }));
+  }catch(e){return[];}
+}
+
+function normL(raw){
+  if(!raw)return[];
+  return(Array.isArray(raw)?raw:[raw]).map(l=>typeof l==='string'?l:l?.name||'').filter(Boolean);
+}
+function normK(raw){
+  if(!raw)return[];
+  return Array.isArray(raw)?raw:raw.split(',').map(k=>k.trim());
+}
+function binderU(m){
+  const r=m.codeRepository||'';
+  if(!r.includes('github.com'))return null;
+  const p=r.replace(/\/$/,'').split('/');
+  return`https://mybinder.org/v2/gh/${p[p.length-2]}/${p[p.length-1]}/HEAD`;
+}
+
+document.getElementById('sshp-ov').addEventListener('click',e=>{
+  if(e.target.id==='sshp-ov')SSHPortal.close();
 });
 </script>
-<!-- ═══════════════════════════════════════════
-     EMBED END
-════════════════════════════════════════════ -->
-
 </body>
 </html>
