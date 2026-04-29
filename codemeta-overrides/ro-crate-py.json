@@ -1,0 +1,18 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ro-crate-py",
+  "version": "0.10.0",
+  "description": "Python library to create and consume Research Object Crates (RO-Crate). Supports RO-Crate 1.2 specification for packaging research data with metadata.",
+  "programmingLanguage": {"@type": "ComputerLanguage", "name": "Python"},
+  "runtimePlatform": "Python 3.9",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "codeRepository": "https://github.com/ResearchObject/ro-crate-py",
+  "keywords": ["ro-crate", "research object", "metadata", "FAIR", "reproducibility", "humanities"],
+  "author": [{"@type": "Person", "name": "ResearchObject Community"}],
+  "softwareRequirements": [
+    {"@type": "SoftwareApplication", "name": "rocrate"},
+    {"@type": "SoftwareApplication", "name": "requests"},
+    {"@type": "SoftwareApplication", "name": "urllib3"}
+  ]
+}

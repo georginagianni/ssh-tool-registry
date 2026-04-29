@@ -1,0 +1,18 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "foliapy",
+  "version": "2.5.9",
+  "description": "Python library for working with FoLiA (Format for Linguistic Annotation), an XML-based format for annotated language resources used extensively in Dutch NLP and CLARIAH infrastructure.",
+  "programmingLanguage": {"@type": "ComputerLanguage", "name": "Python"},
+  "runtimePlatform": "Python 3.6",
+  "license": "https://spdx.org/licenses/GPL-3.0",
+  "codeRepository": "https://github.com/proycon/foliapy",
+  "keywords": ["FoLiA", "annotation", "NLP", "Dutch", "linguistics", "CLARIAH", "XML"],
+  "author": [{"@type": "Person", "name": "Maarten van Gompel", "affiliation": {"name": "KNAW Humanities Cluster"}}],
+  "softwareRequirements": [
+    {"@type": "SoftwareApplication", "name": "folia"},
+    {"@type": "SoftwareApplication", "name": "lxml"},
+    {"@type": "SoftwareApplication", "name": "requests"}
+  ]
+}
