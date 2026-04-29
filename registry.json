@@ -23,6 +23,14 @@
     {
       "repo": "CLARIAH/tool-discovery",
       "description": "CLARIAH tool discovery pipeline and source registry harvester"
+    },
+    {
+      "repo": "proycon/codemeta2html",
+      "description": "Convert codemeta metadata into visual HTML pages"
+    },
+    {
+      "repo": "CLARIAH/COW",
+      "description": "Integrated CSV to RDF converter using CSVW and nanopublications"
     }
   ]
 }
