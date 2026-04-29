@@ -440,28 +440,26 @@ function generateNotebook(meta) {
 }
 
 function generatePythonLauncher(safe) {
-  return [
-    'import subprocess, sys, os, pathlib',
-    '',
+  var script = [
+    'import subprocess, sys, pathlib, shutil',
     'home = pathlib.Path.home()',
     'here = pathlib.Path(__file__).parent',
     'workdir = home / "research" / "' + safe + '"',
-    '',
-    'print("Provisioning environment from codemeta.json...")',
+    'workdir.mkdir(parents=True, exist_ok=True)',
+    'print("Provisioning environment...")',
     'result = subprocess.run(["ansible-playbook", str(here / "playbook.yml")], check=False)',
-    '',
     'if result.returncode == 0:',
-    '    nb = here / "notebook.ipynb"',
-    '    dest = workdir / "notebook.ipynb"',
-    '    if nb.exists() and not dest.exists():',
-    '        import shutil',
-    '        shutil.copy(nb, dest)',
-    '    print("\nEnvironment ready! Opening notebook...")',
-    '    subprocess.run([sys.executable, "-m", "notebook", str(dest)], cwd=str(workdir))',
+    '    nb_src = here / "notebook.ipynb"',
+    '    nb_dst = workdir / "notebook.ipynb"',
+    '    if nb_src.exists():',
+    '        shutil.copy(nb_src, nb_dst)',
+    '    print("Opening notebook...")',
+    '    subprocess.run([sys.executable, "-m", "notebook", str(nb_dst)], cwd=str(workdir))',
     'else:',
-    '    print("\nERROR: Provisioning failed. Check output above.")',
+    '    print("ERROR: Provisioning failed.")',
     '    input("Press Enter to exit...")',
-  ].join('\n');
+  ];
+  return script.join('\n');
 }
 
 function generateReadme(name, workdir) {
