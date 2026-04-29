@@ -247,7 +247,8 @@ var SSHPortal = {
       'playbook.yml': generatePlaybook(meta),
       'launch.command': generateMacLauncher(name, workdir, safe),
       'launch.bat': generateWinLauncher(name, workdir, safe),
-      'HOW_TO_LAUNCH.txt': generateReadme(name, workdir)
+      'HOW_TO_LAUNCH.txt': generateReadme(name, workdir),
+      'notebook.ipynb': generateNotebook(meta)
     };
     // Use JSZip to bundle everything into one zip
     var script = document.createElement('script');
@@ -370,11 +371,71 @@ document.getElementById('sshp-ov').addEventListener('click', function(e) {
 });
 
 function generateMacLauncher(name, workdir, safe) {
-  return '#!/bin/bash\n# Double-click to launch "' + name + '" research environment\n# Mac: right-click \u2192 Open (first time only)\n\necho "Launching: ' + name + '"\necho ""\n\nif ! command -v ansible-playbook &> /dev/null; then\n  echo "ERROR: Ansible not installed. Run: pip3 install ansible"\n  read -p "Press Enter to exit..."\n  exit 1\nfi\n\nDIR="$(cd "$(dirname "$0")" && pwd)"\nansible-playbook "$DIR/playbook.yml"\n\nif [ $? -eq 0 ]; then\n  echo ""\n  echo "Environment ready! Opening notebook..."\n  sleep 1\n  cd "' + workdir + '"\n  python3 -m notebook notebook.ipynb\nelse\n  echo "ERROR: Provisioning failed."\n  read -p "Press Enter to exit..."\nfi\n';
+  var lines = [
+    '#!/bin/bash',
+    '# Double-click to launch "' + name + '" research environment',
+    '# Mac: right-click -> Open (first time only)',
+    '',
+    'DIR="$(cd "$(dirname "$0")" && pwd)"',
+    'echo "Launching: ' + name + '"',
+    '',
+    'if ! command -v ansible-playbook &> /dev/null; then',
+    '  echo "ERROR: Ansible not installed. Run: pip3 install ansible"',
+    '  read -p "Press Enter to exit..."',
+    '  exit 1',
+    'fi',
+    '',
+    'ansible-playbook "$DIR/playbook.yml"',
+    '',
+    'if [ $? -eq 0 ]; then',
+    '  cp "$DIR/notebook.ipynb" "$HOME/research/' + safe + '/notebook.ipynb" 2>/dev/null',
+    '  cd "$HOME/research/' + safe + '"',
+    '  python3 -m notebook notebook.ipynb',
+    'else',
+    '  echo "ERROR: Provisioning failed."',
+    '  read -p "Press Enter to exit..."',
+    'fi',
+  ];
+  return lines.join('\n');
 }
 
 function generateWinLauncher(name, workdir, safe) {
   return '@echo off\necho Launching: ' + name + '\necho.\nwhere ansible-playbook >nul 2>nul\nif %errorlevel% neq 0 (\n  echo ERROR: Ansible not installed. Run: pip3 install ansible\n  pause\n  exit /b 1\n)\nansible-playbook "%~dp0playbook.yml"\nif %errorlevel% equ 0 (\n  echo Environment ready! Opening notebook...\n  timeout /t 1 /nobreak >nul\n  cd /d "' + workdir + '"\n  python3 -m notebook notebook.ipynb\n) else (\n  echo ERROR: Provisioning failed.\n  pause\n)\n';
+}
+
+function generateNotebook(meta) {
+  var name = meta.name || 'Research Tool';
+  var desc = meta.description || '';
+  var lang = (Array.isArray(meta.programmingLanguage) ? meta.programmingLanguage[0] : meta.programmingLanguage) || {};
+  var langName = typeof lang === 'string' ? lang : (lang.name || 'Python');
+  var repo = meta.codeRepository || '';
+  var deps = (meta.softwareRequirements || []).map(function(d) {
+    return typeof d === 'string' ? d : (d.name || '');
+  }).filter(Boolean);
+  var depList = deps.map(function(d) { return '- `' + d + '`'; }).join('\n') || '- None declared';
+  var imports = deps.filter(function(d) {
+    return ['jupyter','ipykernel','notebook','jupyterlab'].indexOf(d.toLowerCase()) === -1;
+  }).map(function(d) { return 'import ' + d.replace(/-/g,'_').toLowerCase(); }).join('\n');
+
+  var cells = [
+    {type:'markdown', source:'# ' + name + '\n\n' + desc + '\n\n| | |\n|---|---|\n| **Language** | ' + langName + ' |\n| **Repository** | ' + repo + ' |\n| **Dependencies** | |\n\n' + depList + '\n\n---\n*Auto-generated from `codemeta.json`*'},
+    {type:'markdown', source:'## 1. Environment check'},
+    {type:'code', source:'import sys\nprint(f"Python {sys.version}")\nprint("Environment ready.")'},
+    {type:'markdown', source:'## 2. Import dependencies'},
+    {type:'code', source: imports || '# No importable dependencies declared'},
+    {type:'markdown', source:'## 3. Start exploring\n\nAdd your analysis below.'},
+    {type:'code', source:'# Your analysis starts here\n'}
+  ];
+
+  var nb = {
+    nbformat: 4, nbformat_minor: 5,
+    metadata: {kernelspec: {display_name: 'Python 3', language: 'python', name: 'python3'}},
+    cells: cells.map(function(c, i) {
+      if (c.type === 'markdown') return {cell_type:'markdown', id:'cell'+i, metadata:{}, source: c.source};
+      return {cell_type:'code', execution_count:null, id:'cell'+i, metadata:{}, outputs:[], source: c.source};
+    })
+  };
+  return JSON.stringify(nb, null, 1);
 }
 
 function generateReadme(name, workdir) {
