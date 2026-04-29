@@ -1,482 +1,796 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSH Research Discovery Portal</title>
-<style>
-body{font-family:system-ui,-apple-system,sans-serif;background:#f4f3ef;display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px}
-.demo-label{font-size:13px;color:#888}
-#sshp-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:1rem}
-#sshp-ov.open{display:flex}
-#sshp-m{background:#fff;border-radius:14px;width:100%;max-width:660px;border:.5px solid #d8d6cc;overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
-.sh{padding:1rem 1.4rem;border-bottom:.5px solid #e8e6df;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.st{font-size:15px;font-weight:500;display:flex;align-items:center;gap:8px}
-.sbadge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500;background:#EEEDFE;color:#3C3489}
-.scl{background:none;border:none;font-size:18px;cursor:pointer;color:#888;padding:4px}
-.scl:hover{color:#333}
-.stabs{display:flex;border-bottom:.5px solid #e8e6df;flex-shrink:0;background:#fafaf8}
-.stab{flex:1;padding:9px 4px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;border:none;background:none;color:#999;font-family:inherit;border-bottom:2px solid transparent;transition:all .15s}
-.stab:hover{color:#534AB7}
-.stab.active{color:#534AB7;border-bottom-color:#534AB7;background:#fff}
-.sbody{padding:1rem 1.4rem;overflow-y:auto;flex:1}
-.srow{display:flex;gap:8px;margin-bottom:10px}
-#sshp-q{flex:1;padding:8px 12px;border:.5px solid #ccc;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
-#sshp-q:focus{border-color:#7F77DD}
-.sbtn{padding:8px 16px;background:#534AB7;color:#EEEDFE;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
-.sbtn:hover{background:#3C3489}
-.sbtn:disabled{opacity:.5;cursor:not-allowed}
-.spills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.spill{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:500}
-.p0{background:#EEEDFE;color:#3C3489}
-.p1{background:#FAEEDA;color:#633806}
-.p2{background:#E6F1FB;color:#0C447C}
-.p3{background:#FCEBEB;color:#791F1F}
-.p4{background:#E1F5EE;color:#085041}
-.sload{text-align:center;padding:1.2rem;color:#999;font-size:13px;display:none}
-.sprogw{height:2px;background:#e0ded7;border-radius:2px;overflow:hidden;margin:6px 0 0}
-.sprog{height:100%;background:#534AB7;border-radius:2px;transition:width .4s}
-.sstat{font-size:12px;color:#999;margin-bottom:8px}
-.sres{display:flex;flex-direction:column;gap:8px}
-.scard{border:.5px solid #e0ded7;border-radius:10px;padding:11px 13px;background:#fff;transition:border-color .15s}
-.scard:hover{border-color:#7F77DD}
-.sct{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px}
-.scn{font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.4}
-.scm{font-size:11px;color:#999;margin-top:2px}
-.scd{font-size:12px;color:#666;line-height:1.5;margin-bottom:7px}
-.scf{display:flex;gap:5px;flex-wrap:wrap}
-.sa{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:.5px solid #ccc;background:#f9f8f5;color:#333;font-family:inherit;text-decoration:none;display:inline-block;transition:all .15s}
-.sa:hover{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
-.saL{background:#534AB7;color:#EEEDFE;border-color:#534AB7}
-.saL:hover{background:#3C3489;color:#EEEDFE}
-.saA{background:#085041;color:#E1F5EE;border-color:#085041}
-.saA:hover{background:#04342C;color:#E1F5EE}
-.sempty{text-align:center;padding:2rem;color:#aaa;font-size:13px;line-height:1.7}
-.shint{font-size:12px;color:#aaa;line-height:1.6;padding:1rem;background:#f9f8f5;border-radius:8px;border:.5px solid #e8e6df}
-.sfooter{padding:.8rem 1.4rem;border-top:.5px solid #e8e6df;font-size:11px;color:#aaa;flex-shrink:0;display:flex;justify-content:space-between}
-</style>
-</head>
-<body>
-<div class="demo-label">SSH Research Discovery Portal</div>
-<button onclick="SSHPortal.open()" style="padding:10px 22px;background:#534AB7;color:#EEEDFE;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Search research sources</button>
 
-<div id="sshp-ov">
-  <div id="sshp-m" role="dialog" aria-label="SSH Research Discovery Portal">
-    <div class="sh">
-      <div class="st">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="#534AB7" stroke-width="1.2"/><path d="M10 10l3 3" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round"/></svg>
-        SSH research discovery portal
-        <span class="sbadge">5 sources</span>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSH Research Discovery Portal</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f3ef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .demo-label {
+      font-size: 13px;
+      color: #888
+    }
+
+    #sshp-ov {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem
+    }
+
+    #sshp-ov.open {
+      display: flex
+    }
+
+    #sshp-m {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 660px;
+      border: .5px solid #d8d6cc;
+      overflow: hidden;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column
+    }
+
+    .sh {
+      padding: 1rem 1.4rem;
+      border-bottom: .5px solid #e8e6df;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0
+    }
+
+    .st {
+      font-size: 15px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .sbadge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 500;
+      background: #EEEDFE;
+      color: #3C3489
+    }
+
+    .scl {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #888;
+      padding: 4px
+    }
+
+    .scl:hover {
+      color: #333
+    }
+
+    .stabs {
+      display: flex;
+      border-bottom: .5px solid #e8e6df;
+      flex-shrink: 0;
+      background: #fafaf8
+    }
+
+    .stab {
+      flex: 1;
+      padding: 9px 4px;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: #999;
+      font-family: inherit;
+      border-bottom: 2px solid transparent;
+      transition: all .15s
+    }
+
+    .stab:hover {
+      color: #534AB7
+    }
+
+    .stab.active {
+      color: #534AB7;
+      border-bottom-color: #534AB7;
+      background: #fff
+    }
+
+    .sbody {
+      padding: 1rem 1.4rem;
+      overflow-y: auto;
+      flex: 1
+    }
+
+    .srow {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px
+    }
+
+    #sshp-q {
+      flex: 1;
+      padding: 8px 12px;
+      border: .5px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none
+    }
+
+    #sshp-q:focus {
+      border-color: #7F77DD
+    }
+
+    .sbtn {
+      padding: 8px 16px;
+      background: #534AB7;
+      color: #EEEDFE;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit
+    }
+
+    .sbtn:hover {
+      background: #3C3489
+    }
+
+    .sbtn:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .spills {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 10px
+    }
+
+    .spill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 500
+    }
+
+    .p0 {
+      background: #EEEDFE;
+      color: #3C3489
+    }
+
+    .p1 {
+      background: #FAEEDA;
+      color: #633806
+    }
+
+    .p2 {
+      background: #E6F1FB;
+      color: #0C447C
+    }
+
+    .p3 {
+      background: #FCEBEB;
+      color: #791F1F
+    }
+
+    .p4 {
+      background: #E1F5EE;
+      color: #085041
+    }
+
+    .sload {
+      text-align: center;
+      padding: 1.2rem;
+      color: #999;
+      font-size: 13px;
+      display: none
+    }
+
+    .sprogw {
+      height: 2px;
+      background: #e0ded7;
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 6px 0 0
+    }
+
+    .sprog {
+      height: 100%;
+      background: #534AB7;
+      border-radius: 2px;
+      transition: width .4s
+    }
+
+    .sstat {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px
+    }
+
+    .sres {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .scard {
+      border: .5px solid #e0ded7;
+      border-radius: 10px;
+      padding: 11px 13px;
+      background: #fff;
+      transition: border-color .15s
+    }
+
+    .scard:hover {
+      border-color: #7F77DD
+    }
+
+    .sct {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 5px
+    }
+
+    .scn {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.4
+    }
+
+    .scm {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px
+    }
+
+    .scd {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 7px
+    }
+
+    .scf {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap
+    }
+
+    .sa {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      border: .5px solid #ccc;
+      background: #f9f8f5;
+      color: #333;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-block;
+      transition: all .15s
+    }
+
+    .sa:hover {
+      background: #EEEDFE;
+      color: #3C3489;
+      border-color: #AFA9EC
+    }
+
+    .saL {
+      background: #534AB7;
+      color: #EEEDFE;
+      border-color: #534AB7
+    }
+
+    .saL:hover {
+      background: #3C3489;
+      color: #EEEDFE
+    }
+
+    .saA {
+      background: #085041;
+      color: #E1F5EE;
+      border-color: #085041
+    }
+
+    .saA:hover {
+      background: #04342C;
+      color: #E1F5EE
+    }
+
+    .sempty {
+      text-align: center;
+      padding: 2rem;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.7
+    }
+
+    .shint {
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.6;
+      padding: 1rem;
+      background: #f9f8f5;
+      border-radius: 8px;
+      border: .5px solid #e8e6df
+    }
+
+    .sfooter {
+      padding: .8rem 1.4rem;
+      border-top: .5px solid #e8e6df;
+      font-size: 11px;
+      color: #aaa;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between
+    }
+  </style>
+</head>
+
+<body>
+  <div class="demo-label">SSH Research Discovery Portal</div>
+  <button onclick="SSHPortal.open()"
+    style="padding:10px 22px;background:#534AB7;color:#EEEDFE;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Search
+    research sources</button>
+
+  <div id="sshp-ov">
+    <div id="sshp-m" role="dialog" aria-label="SSH Research Discovery Portal">
+      <div class="sh">
+        <div class="st">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="4.5" stroke="#534AB7" stroke-width="1.2" />
+            <path d="M10 10l3 3" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round" />
+          </svg>
+          SSH research discovery portal
+          <span class="sbadge">5 sources</span>
+        </div>
+        <button class="scl" onclick="SSHPortal.close()">&#x2715;</button>
       </div>
-      <button class="scl" onclick="SSHPortal.close()">&#x2715;</button>
-    </div>
-    <div class="stabs">
-      <button class="stab active" id="tab-tools" onclick="SSHPortal.tab('tools')">Tools</button>
-      <button class="stab" id="tab-archives" onclick="SSHPortal.tab('archives')">Archives</button>
-      <button class="stab" id="tab-literature" onclick="SSHPortal.tab('literature')">Literature</button>
-      <button class="stab" id="tab-data" onclick="SSHPortal.tab('data')">Research data</button>
-    </div>
-    <div class="sbody">
-      <div class="srow">
-        <input type="text" id="sshp-q" placeholder="Search..." onkeydown="if(event.key==='Enter')SSHPortal.search()"/>
-        <button class="sbtn" id="sshp-sb" onclick="SSHPortal.search()">Search</button>
+      <div class="stabs">
+        <button class="stab active" id="tab-tools" onclick="SSHPortal.tab('tools')">Tools</button>
+        <button class="stab" id="tab-archives" onclick="SSHPortal.tab('archives')">Archives</button>
+        <button class="stab" id="tab-literature" onclick="SSHPortal.tab('literature')">Literature</button>
+        <button class="stab" id="tab-data" onclick="SSHPortal.tab('data')">Research data</button>
       </div>
-      <div class="spills" id="sshp-pills"></div>
-      <div class="sload" id="sshp-load">Searching...<div class="sprogw"><div class="sprog" id="sshp-pb" style="width:0%"></div></div></div>
-      <div class="sstat" id="sshp-stat"></div>
-      <div class="sres" id="sshp-res"></div>
-    </div>
-    <div class="sfooter">
-      <span id="sshp-fl">Select a tab and search</span>
-      <span>Europeana &middot; Zenodo &middot; Gutenberg &middot; DANS &middot; GitHub</span>
+      <div class="sbody">
+        <div class="srow">
+          <input type="text" id="sshp-q" placeholder="Search..."
+            onkeydown="if(event.key==='Enter')SSHPortal.search()" />
+          <button class="sbtn" id="sshp-sb" onclick="SSHPortal.search()">Search</button>
+        </div>
+        <div class="spills" id="sshp-pills"></div>
+        <div class="sload" id="sshp-load">Searching...<div class="sprogw">
+            <div class="sprog" id="sshp-pb" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="sstat" id="sshp-stat"></div>
+        <div class="sres" id="sshp-res"></div>
+      </div>
+      <div class="sfooter">
+        <span id="sshp-fl">Select a tab and search</span>
+        <span>Europeana &middot; Zenodo &middot; Gutenberg &middot; DANS &middot; GitHub</span>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-var EK = 'borewashropp';
-var REPOS = [
-  'georginagianni/text-analysis-demo',
-  'proycon/codemetapy',
-  'proycon/codemeta-server',
-  'citation-file-format/cff-converter-python',
-  'CLARIAH/tool-discovery'
-];
-var TABS = {
-  tools:      {pills:[['GitHub registry','p0']]},
-  archives:   {pills:[['Europeana','p1'],['DANS EASY','p2']]},
-  literature: {pills:[['Project Gutenberg','p3']]},
-  data:       {pills:[['Zenodo','p4']]}
-};
-var HINTS = {
-  tools:'Search tools by name, language, or domain. All tools can launch directly in Binder.',
-  archives:'Search 50M+ cultural heritage objects from Europeana and Dutch datasets from DANS EASY.',
-  literature:'Search 70,000+ free ebooks from Project Gutenberg by title, author, or subject.',
-  data:'Search research datasets, software, and publications archived on Zenodo.'
-};
-var curTab = 'tools';
-var cache = null;
-
-var SSHPortal = {
-  open: function() {
-    document.getElementById('sshp-ov').classList.add('open');
-    document.getElementById('sshp-q').focus();
-    this.tab('tools', true);
-  },
-  close: function() {
-    document.getElementById('sshp-ov').classList.remove('open');
-  },
-  tab: function(t, force) {
-    if (t === curTab && !force) return;
-    curTab = t;
-    document.querySelectorAll('.stab').forEach(function(b) { b.classList.remove('active'); });
-    document.getElementById('tab-' + t).classList.add('active');
-    document.getElementById('sshp-q').value = '';
-    document.getElementById('sshp-res').innerHTML = '<div class="shint">' + HINTS[t] + '</div>';
-    document.getElementById('sshp-stat').textContent = '';
-    document.getElementById('sshp-pills').innerHTML = TABS[t].pills.map(function(p) {
-      return '<span class="spill ' + p[1] + '">' + p[0] + '</span>';
-    }).join('');
-    if (t === 'tools' && !cache) this.loadTools();
-    else if (t === 'tools' && cache) this.renderTools('');
-  },
-  search: async function() {
-    var q = document.getElementById('sshp-q').value.trim();
-    if (!q) return;
-    document.getElementById('sshp-sb').disabled = true;
-    this.loading(true);
-    try {
-      if (curTab === 'tools')      await this.searchTools(q);
-      if (curTab === 'archives')   await this.searchArchives(q);
-      if (curTab === 'literature') await this.searchLit(q);
-      if (curTab === 'data')       await this.searchData(q);
-    } catch(e) { this.err('Search failed. Please try again.'); }
-    this.loading(false);
-    document.getElementById('sshp-sb').disabled = false;
-  },
-  loadTools: async function() {
-    this.loading(true);
-    var pb = document.getElementById('sshp-pb');
-    var ms = [];
-    for (var i = 0; i < REPOS.length; i++) {
-      pb.style.width = Math.round(i / REPOS.length * 90) + '%';
-      var m = await fetchMeta(REPOS[i]);
-      if (m) ms.push(m);
-    }
-    pb.style.width = '100%';
-    cache = ms;
-    this.loading(false);
-    this.renderTools('');
-  },
-  searchTools: async function(q) {
-    if (!cache) await this.loadTools();
-    else this.renderTools(q);
-  },
-  renderTools: function(q) {
-    var self = this;
-    var fl = cache.filter(function(t) {
-      var h = [t.name, t.description, normL(t.programmingLanguage).join(' '), normK(t.keywords || []).join(' ')].join(' ').toLowerCase();
-      return !q || h.includes(q.toLowerCase());
-    });
-    document.getElementById('sshp-stat').textContent = q ? fl.length + ' tools matching "' + q + '"' : fl.length + ' tools indexed';
-    document.getElementById('sshp-fl').textContent = fl.length + ' tools';
-    if (!fl.length) {
-      document.getElementById('sshp-res').innerHTML = '<div class="sempty">No tools found for "' + q + '".</div>';
-      return;
-    }
-    document.getElementById('sshp-res').innerHTML = fl.map(function(t) {
-      var langs = normL(t.programmingLanguage);
-      var bu = binderU(t);
-      var repo = t.codeRepository || 'https://github.com/' + t._r;
-      return '<div class="scard">' +
-        '<div class="sct"><div><div class="scn">' + (t.name || t._r) + '</div>' +
-        '<div class="scm">' + (langs.join(',') || '—') + ' · v' + (t.version || '—') + '</div></div>' +
-        '<span class="spill p0">GitHub</span></div>' +
-        '<div class="scd">' + (t.description || '').slice(0, 160) + ((t.description || '').length > 160 ? '...' : '') + '</div>' +
-        '<div class="scf">' +
-        '<a class="sa" href="' + repo + '" target="_blank">GitHub</a>' +
-        (bu ? '<a class="sa saL" href="' + bu + '" target="_blank">Launch in Binder</a>' : '') +
-        '<button class="sa saA" onclick="SSHPortal.downloadAnsible(\'' + t._r + '\', event)">Download Ansible playbook</button>' +
-        '</div></div>';
-    }).join('');
-  },
-  searchArchives: async function(q) {
-    var results = await Promise.allSettled([searchEuropeana(q), searchDANS(q)]);
-    var items = [];
-    results.forEach(function(r) { if (r.status === 'fulfilled') items = items.concat(r.value); });
-    this.renderCards(items, q);
-  },
-  searchLit: async function(q) { this.renderCards(await searchGutenberg(q), q); },
-  searchData: async function(q) { this.renderCards(await searchZenodo(q), q); },
-  renderCards: function(items, q) {
-    var pill = {'Europeana':'p1','DANS EASY':'p2','Project Gutenberg':'p3','Zenodo':'p4'};
-    document.getElementById('sshp-stat').textContent = items.length + ' results for "' + q + '"';
-    document.getElementById('sshp-fl').textContent = items.length + ' results';
-    if (!items.length) {
-      document.getElementById('sshp-res').innerHTML = '<div class="sempty">No results for "' + q + '".<br>Try different keywords.</div>';
-      return;
-    }
-    document.getElementById('sshp-res').innerHTML = items.map(function(r) {
-      return '<div class="scard"><div class="sct"><div><div class="scn">' + r.title + '</div>' +
-        '<div class="scm">' + (r.meta || '') + '</div></div>' +
-        '<span class="spill ' + (pill[r.source] || 'p0') + '">' + r.source + '</span></div>' +
-        '<div class="scd">' + (r.desc || '').replace(/<[^>]+>/g, '').slice(0, 180) + '</div>' +
-        '<div class="scf"><a class="sa" href="' + r.url + '" target="_blank">View</a>' +
-        (r.dl ? '<a class="sa" href="' + r.dl + '" target="_blank">Download</a>' : '') +
-        '</div></div>';
-    }).join('');
-  },
-  loading: function(on) {
-    document.getElementById('sshp-load').style.display = on ? 'block' : 'none';
-    if (on) document.getElementById('sshp-pb').style.width = '30%';
-  },
-  err: function(m) {
-    document.getElementById('sshp-res').innerHTML = '<div class="sempty">' + m + '</div>';
-  },
-  downloadAnsible: async function(repo, event) {
-    event.stopPropagation();
-    var btn = event.target;
-    btn.textContent = 'Generating...';
-    btn.disabled = true;
-    var meta = await fetchMeta(repo);
-    if (!meta) { btn.textContent = 'Failed'; btn.disabled = false; return; }
-    var name = meta.name || meta._r || 'research-tool';
-    var safe = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-    var workdir = '~/research/' + safe;
-    var files = {
-      'playbook.yml': generatePlaybook(meta),
-      'launch.command': generateMacLauncher(name, workdir, safe),
-      'launch.bat': generateWinLauncher(name, workdir, safe),
-      'HOW_TO_LAUNCH.txt': generateReadme(name, workdir),
-      'launch.py': generatePythonLauncher(safe),
-      'notebook.ipynb': generateNotebook(meta)
+  <script>
+    var EK = 'borewashropp';
+    var REPOS = [
+      'georginagianni/text-analysis-demo',
+      'CLARIAH/COW',
+      'citation-file-format/cff-converter-python',
+      'ResearchObject/ro-crate-py',
+      'adbar/trafilatura',
+      'cldf/pycldf',
+      'proycon/foliapy'
+    ];
+    var TABS = {
+      tools: { pills: [['GitHub registry', 'p0']] },
+      archives: { pills: [['Europeana', 'p1'], ['DANS EASY', 'p2']] },
+      literature: { pills: [['Project Gutenberg', 'p3']] },
+      data: { pills: [['Zenodo', 'p4']] }
     };
-    // Use JSZip to bundle everything into one zip
-    var script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-    script.onload = function() {
-      var zip = new JSZip();
-      var folder = zip.folder(safe + '-environment');
-      Object.keys(files).forEach(function(fname) {
-        folder.file(fname, files[fname]);
-      });
-      zip.generateAsync({type: 'blob'}).then(function(blob) {
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = safe + '-environment.zip';
-        a.click();
-        URL.revokeObjectURL(url);
-        btn.textContent = 'Downloaded!';
-        setTimeout(function() { btn.textContent = 'Download Ansible playbook'; btn.disabled = false; }, 2000);
-      });
+    var HINTS = {
+      tools: 'Search tools by name, language, or domain. All tools can launch directly in Binder.',
+      archives: 'Search 50M+ cultural heritage objects from Europeana and Dutch datasets from DANS EASY.',
+      literature: 'Search 70,000+ free ebooks from Project Gutenberg by title, author, or subject.',
+      data: 'Search research datasets, software, and publications archived on Zenodo.'
     };
-    document.head.appendChild(script);
-  }
-};
+    var curTab = 'tools';
+    var cache = null;
 
-function generatePlaybook(meta) {
-  var name = meta.name || meta._r || 'research-tool';
-  var safe = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-  var version = meta.version || 'latest';
-  var repo = meta.codeRepository || '';
-  var lang = normL(meta.programmingLanguage)[0] || 'Python';
-  var desc = (meta.description || '').slice(0, 80);
-  var skip = ['jupyter','ipykernel','notebook','jupyterlab'];
-  var deps = (meta.softwareRequirements || []).map(function(d) {
-    if (typeof d === 'string') return d;
-    var v = d.version || '';
-    return d.name + (v && !/^[><=!]/.test(v) ? '==' + v : v);
-  }).filter(function(d) { return d && skip.indexOf(d.split(/[><=!]/)[0].toLowerCase()) === -1; });
-  var pipList = deps.map(function(d) { return '          - "' + d + '"'; }).join('\n') || '          - "notebook"';
-  var repoTask = (repo && repo.includes('github.com')) ?
-    '\n    - name: Clone source repository\n      ansible.builtin.git:\n        repo: "' + repo + '"\n        dest: "~/research/' + safe + '/source"\n        version: HEAD\n        force: yes\n' : '';
-  return '---\n# Ansible playbook auto-generated from codemeta.json\n# Tool    : ' + name + '\n# Version : ' + version + '\n# Language: ' + lang + '\n# Desc    : ' + desc + '\n#\n# Run with: ansible-playbook playbook.yml\n\n- name: Provision research environment for ' + name + '\n  hosts: localhost\n  connection: local\n  gather_facts: yes\n  become: no\n\n  vars:\n    tool_name: "' + name + '"\n    tool_version: "' + version + '"\n    work_dir: "~/research/' + safe + '"\n\n  tasks:\n\n    - name: Check Python version\n      ansible.builtin.command: python3 --version\n      register: py_ver\n      changed_when: false\n\n    - name: Create working directory\n      ansible.builtin.file:\n        path: "{{ work_dir }}"\n        state: directory\n        mode: "0755"\n\n    - name: Install declared dependencies\n      ansible.builtin.pip:\n        name:\n' + pipList + '\n        state: present\n' + repoTask + '\n    - name: Install Jupyter\n      ansible.builtin.pip:\n        name:\n          - "jupyter"\n          - "notebook"\n        state: present\n\n    - name: Environment ready\n      ansible.builtin.debug:\n        msg:\n          - "Environment ready: ' + name + ' ' + version + '"\n          - "Working directory : ~/research/' + safe + '"\n          - "To launch: cd ~/research/' + safe + ' && jupyter notebook"\n';
-}
+    var SSHPortal = {
+      open: function () {
+        document.getElementById('sshp-ov').classList.add('open');
+        document.getElementById('sshp-q').focus();
+        this.tab('tools', true);
+      },
+      close: function () {
+        document.getElementById('sshp-ov').classList.remove('open');
+      },
+      tab: function (t, force) {
+        if (t === curTab && !force) return;
+        curTab = t;
+        document.querySelectorAll('.stab').forEach(function (b) { b.classList.remove('active'); });
+        document.getElementById('tab-' + t).classList.add('active');
+        document.getElementById('sshp-q').value = '';
+        document.getElementById('sshp-res').innerHTML = '<div class="shint">' + HINTS[t] + '</div>';
+        document.getElementById('sshp-stat').textContent = '';
+        document.getElementById('sshp-pills').innerHTML = TABS[t].pills.map(function (p) {
+          return '<span class="spill ' + p[1] + '">' + p[0] + '</span>';
+        }).join('');
+        if (t === 'tools' && !cache) this.loadTools();
+        else if (t === 'tools' && cache) this.renderTools('');
+      },
+      search: async function () {
+        var q = document.getElementById('sshp-q').value.trim();
+        if (!q) return;
+        document.getElementById('sshp-sb').disabled = true;
+        this.loading(true);
+        try {
+          if (curTab === 'tools') await this.searchTools(q);
+          if (curTab === 'archives') await this.searchArchives(q);
+          if (curTab === 'literature') await this.searchLit(q);
+          if (curTab === 'data') await this.searchData(q);
+        } catch (e) { this.err('Search failed. Please try again.'); }
+        this.loading(false);
+        document.getElementById('sshp-sb').disabled = false;
+      },
+      loadTools: async function () {
+        this.loading(true);
+        var pb = document.getElementById('sshp-pb');
+        var ms = [];
+        for (var i = 0; i < REPOS.length; i++) {
+          pb.style.width = Math.round(i / REPOS.length * 90) + '%';
+          var m = await fetchMeta(REPOS[i]);
+          if (m) ms.push(m);
+        }
+        pb.style.width = '100%';
+        cache = ms;
+        this.loading(false);
+        this.renderTools('');
+      },
+      searchTools: async function (q) {
+        if (!cache) await this.loadTools();
+        else this.renderTools(q);
+      },
+      renderTools: function (q) {
+        var self = this;
+        var fl = cache.filter(function (t) {
+          var h = [t.name, t.description, normL(t.programmingLanguage).join(' '), normK(t.keywords || []).join(' ')].join(' ').toLowerCase();
+          return !q || h.includes(q.toLowerCase());
+        });
+        document.getElementById('sshp-stat').textContent = q ? fl.length + ' tools matching "' + q + '"' : fl.length + ' tools indexed';
+        document.getElementById('sshp-fl').textContent = fl.length + ' tools';
+        if (!fl.length) {
+          document.getElementById('sshp-res').innerHTML = '<div class="sempty">No tools found for "' + q + '".</div>';
+          return;
+        }
+        document.getElementById('sshp-res').innerHTML = fl.map(function (t) {
+          var langs = normL(t.programmingLanguage);
+          var bu = binderU(t);
+          var repo = t.codeRepository || 'https://github.com/' + t._r;
+          return '<div class="scard">' +
+            '<div class="sct"><div><div class="scn">' + (t.name || t._r) + '</div>' +
+            '<div class="scm">' + (langs.join(',') || '—') + ' · v' + (t.version || '—') + '</div></div>' +
+            '<span class="spill p0">GitHub</span></div>' +
+            '<div class="scd">' + (t.description || '').slice(0, 160) + ((t.description || '').length > 160 ? '...' : '') + '</div>' +
+            '<div class="scf">' +
+            '<a class="sa" href="' + repo + '" target="_blank">GitHub</a>' +
+            (bu ? '<a class="sa saL" href="' + bu + '" target="_blank">Launch in Binder</a>' : '') +
+            '<button class="sa saA" onclick="SSHPortal.downloadAnsible(\'' + t._r + '\', event)">Download Ansible playbook</button>' +
+            '</div></div>';
+        }).join('');
+      },
+      searchArchives: async function (q) {
+        var results = await Promise.allSettled([searchEuropeana(q), searchDANS(q)]);
+        var items = [];
+        results.forEach(function (r) { if (r.status === 'fulfilled') items = items.concat(r.value); });
+        this.renderCards(items, q);
+      },
+      searchLit: async function (q) { this.renderCards(await searchGutenberg(q), q); },
+      searchData: async function (q) { this.renderCards(await searchZenodo(q), q); },
+      renderCards: function (items, q) {
+        var pill = { 'Europeana': 'p1', 'DANS EASY': 'p2', 'Project Gutenberg': 'p3', 'Zenodo': 'p4' };
+        document.getElementById('sshp-stat').textContent = items.length + ' results for "' + q + '"';
+        document.getElementById('sshp-fl').textContent = items.length + ' results';
+        if (!items.length) {
+          document.getElementById('sshp-res').innerHTML = '<div class="sempty">No results for "' + q + '".<br>Try different keywords.</div>';
+          return;
+        }
+        document.getElementById('sshp-res').innerHTML = items.map(function (r) {
+          return '<div class="scard"><div class="sct"><div><div class="scn">' + r.title + '</div>' +
+            '<div class="scm">' + (r.meta || '') + '</div></div>' +
+            '<span class="spill ' + (pill[r.source] || 'p0') + '">' + r.source + '</span></div>' +
+            '<div class="scd">' + (r.desc || '').replace(/<[^>]+>/g, '').slice(0, 180) + '</div>' +
+            '<div class="scf"><a class="sa" href="' + r.url + '" target="_blank">View</a>' +
+            (r.dl ? '<a class="sa" href="' + r.dl + '" target="_blank">Download</a>' : '') +
+            '</div></div>';
+        }).join('');
+      },
+      loading: function (on) {
+        document.getElementById('sshp-load').style.display = on ? 'block' : 'none';
+        if (on) document.getElementById('sshp-pb').style.width = '30%';
+      },
+      err: function (m) {
+        document.getElementById('sshp-res').innerHTML = '<div class="sempty">' + m + '</div>';
+      },
+      downloadAnsible: async function (repo, event) {
+        event.stopPropagation();
+        var btn = event.target;
+        btn.textContent = 'Generating...';
+        btn.disabled = true;
+        var meta = await fetchMeta(repo);
+        if (!meta) { btn.textContent = 'Failed'; btn.disabled = false; return; }
+        var name = meta.name || meta._r || 'research-tool';
+        var safe = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        var workdir = '~/research/' + safe;
+        var files = {
+          'playbook.yml': generatePlaybook(meta),
+          'launch.command': generateMacLauncher(name, workdir, safe),
+          'launch.bat': generateWinLauncher(name, workdir, safe),
+          'HOW_TO_LAUNCH.txt': generateReadme(name, workdir),
+          'launch.py': generatePythonLauncher(safe),
+          'notebook.ipynb': generateNotebook(meta)
+        };
+        // Use JSZip to bundle everything into one zip
+        var script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        script.onload = function () {
+          var zip = new JSZip();
+          var folder = zip.folder(safe + '-environment');
+          Object.keys(files).forEach(function (fname) {
+            folder.file(fname, files[fname]);
+          });
+          zip.generateAsync({ type: 'blob' }).then(function (blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = safe + '-environment.zip';
+            a.click();
+            URL.revokeObjectURL(url);
+            btn.textContent = 'Downloaded!';
+            setTimeout(function () { btn.textContent = 'Download Ansible playbook'; btn.disabled = false; }, 2000);
+          });
+        };
+        document.head.appendChild(script);
+      }
+    };
 
-async function fetchMeta(repo) {
-  var branches = ['main', 'master'];
-  for (var i = 0; i < branches.length; i++) {
-    try {
-      var r = await fetch('https://raw.githubusercontent.com/' + repo + '/' + branches[i] + '/codemeta.json');
-      if (r.ok) { var m = await r.json(); m._r = repo; return m; }
-    } catch(e) {}
-  }
-  try {
-    var r = await fetch('https://api.github.com/repos/' + repo);
-    if (r.ok) {
-      var d = await r.json();
-      return {name:d.name, description:d.description||'', version:'—', programmingLanguage:d.language?[{name:d.language}]:[], codeRepository:d.html_url, keywords:[], _r:repo};
+    function generatePlaybook(meta) {
+      var name = meta.name || meta._r || 'research-tool';
+      var safe = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      var version = meta.version || 'latest';
+      var repo = meta.codeRepository || '';
+      var lang = normL(meta.programmingLanguage)[0] || 'Python';
+      var desc = (meta.description || '').slice(0, 80);
+      var skip = ['jupyter', 'ipykernel', 'notebook', 'jupyterlab'];
+      var deps = (meta.softwareRequirements || []).map(function (d) {
+        if (typeof d === 'string') return d;
+        var v = d.version || '';
+        return d.name + (v && !/^[><=!]/.test(v) ? '==' + v : v);
+      }).filter(function (d) { return d && skip.indexOf(d.split(/[><=!]/)[0].toLowerCase()) === -1; });
+      var pipList = deps.map(function (d) { return '          - "' + d + '"'; }).join('\n') || '          - "notebook"';
+      var repoTask = (repo && repo.includes('github.com')) ?
+        '\n    - name: Clone source repository\n      ansible.builtin.git:\n        repo: "' + repo + '"\n        dest: "~/research/' + safe + '/source"\n        version: HEAD\n        force: yes\n' : '';
+      return '---\n# Ansible playbook auto-generated from codemeta.json\n# Tool    : ' + name + '\n# Version : ' + version + '\n# Language: ' + lang + '\n# Desc    : ' + desc + '\n#\n# Run with: ansible-playbook playbook.yml\n\n- name: Provision research environment for ' + name + '\n  hosts: localhost\n  connection: local\n  gather_facts: yes\n  become: no\n\n  vars:\n    tool_name: "' + name + '"\n    tool_version: "' + version + '"\n    work_dir: "~/research/' + safe + '"\n\n  tasks:\n\n    - name: Check Python version\n      ansible.builtin.command: python3 --version\n      register: py_ver\n      changed_when: false\n\n    - name: Create working directory\n      ansible.builtin.file:\n        path: "{{ work_dir }}"\n        state: directory\n        mode: "0755"\n\n    - name: Install declared dependencies\n      ansible.builtin.pip:\n        name:\n' + pipList + '\n        state: present\n' + repoTask + '\n    - name: Install Jupyter\n      ansible.builtin.pip:\n        name:\n          - "jupyter"\n          - "notebook"\n        state: present\n\n    - name: Environment ready\n      ansible.builtin.debug:\n        msg:\n          - "Environment ready: ' + name + ' ' + version + '"\n          - "Working directory : ~/research/' + safe + '"\n          - "To launch: cd ~/research/' + safe + ' && jupyter notebook"\n';
     }
-  } catch(e) {}
-  return null;
-}
 
-async function searchEuropeana(q) {
-  try {
-    var r = await fetch('https://api.europeana.eu/record/v2/search.json?query=' + encodeURIComponent(q) + '&rows=5&profile=minimal&wskey=' + EK);
-    var d = await r.json();
-    return (d.items || []).map(function(i) {
-      return {title: Array.isArray(i.title) ? i.title[0] : (i.title || 'Untitled'), desc: Array.isArray(i.dcDescription) ? i.dcDescription[0] : '', meta: Array.isArray(i.dataProvider) ? i.dataProvider[0] : '', url: 'https://www.europeana.eu/item' + i.id, source: 'Europeana'};
+    async function fetchMeta(repo) {
+      var branches = ['main', 'master'];
+      for (var i = 0; i < branches.length; i++) {
+        try {
+          var r = await fetch('https://raw.githubusercontent.com/' + repo + '/' + branches[i] + '/codemeta.json');
+          if (r.ok) { var m = await r.json(); m._r = repo; return m; }
+        } catch (e) { }
+      }
+      try {
+        var r = await fetch('https://api.github.com/repos/' + repo);
+        if (r.ok) {
+          var d = await r.json();
+          return { name: d.name, description: d.description || '', version: '—', programmingLanguage: d.language ? [{ name: d.language }] : [], codeRepository: d.html_url, keywords: [], _r: repo };
+        }
+      } catch (e) { }
+      return null;
+    }
+
+    async function searchEuropeana(q) {
+      try {
+        var r = await fetch('https://api.europeana.eu/record/v2/search.json?query=' + encodeURIComponent(q) + '&rows=5&profile=minimal&wskey=' + EK);
+        var d = await r.json();
+        return (d.items || []).map(function (i) {
+          return { title: Array.isArray(i.title) ? i.title[0] : (i.title || 'Untitled'), desc: Array.isArray(i.dcDescription) ? i.dcDescription[0] : '', meta: Array.isArray(i.dataProvider) ? i.dataProvider[0] : '', url: 'https://www.europeana.eu/item' + i.id, source: 'Europeana' };
+        });
+      } catch (e) { return []; }
+    }
+
+    async function searchDANS(q) {
+      try {
+        var r = await fetch('https://easy.dans.knaw.nl/solr/search?q=' + encodeURIComponent(q) + '&rows=4&wt=json');
+        var d = await r.json();
+        return (d.response && d.response.docs || []).map(function (doc) {
+          return { title: (doc.dc_title && doc.dc_title[0]) || 'Untitled', desc: (doc.dc_description && doc.dc_description[0]) || '', meta: (doc.dc_creator && doc.dc_creator[0]) || '', url: 'https://easy.dans.knaw.nl/ui/datasets/id/' + doc.sid, source: 'DANS EASY' };
+        });
+      } catch (e) { return []; }
+    }
+
+    async function searchGutenberg(q) {
+      try {
+        var r = await fetch('https://gutendex.com/books?search=' + encodeURIComponent(q));
+        var d = await r.json();
+        return (d.results || []).slice(0, 6).map(function (b) {
+          return { title: b.title, desc: 'By ' + (b.authors.map(function (a) { return a.name; }).join(', ') || 'Unknown') + '. Languages: ' + b.languages.join(', ') + '.', meta: ((b.download_count || 0).toLocaleString()) + ' downloads', url: 'https://www.gutenberg.org/ebooks/' + b.id, dl: (b.formats && (b.formats['text/html'] || b.formats['application/epub+zip'])) || '', source: 'Project Gutenberg' };
+        });
+      } catch (e) { return []; }
+    }
+
+    async function searchZenodo(q) {
+      try {
+        var r = await fetch('https://zenodo.org/api/records?q=' + encodeURIComponent(q) + '&size=6&sort=mostrecent');
+        var d = await r.json();
+        return (d.hits && d.hits.hits || []).map(function (rec) {
+          return { title: (rec.metadata && rec.metadata.title) || 'Untitled', desc: (rec.metadata && rec.metadata.description) || '', meta: ((rec.metadata && rec.metadata.creators && rec.metadata.creators[0] && rec.metadata.creators[0].name) || '') + ' · ' + ((rec.metadata && rec.metadata.publication_date) || ''), url: (rec.links && rec.links.html) || 'https://zenodo.org/record/' + rec.id, source: 'Zenodo' };
+        });
+      } catch (e) { return []; }
+    }
+
+    function normL(raw) {
+      if (!raw) return [];
+      return (Array.isArray(raw) ? raw : [raw]).map(function (l) { return typeof l === 'string' ? l : (l && l.name) || ''; }).filter(Boolean);
+    }
+    function normK(raw) {
+      if (!raw) return [];
+      return Array.isArray(raw) ? raw : raw.split(',').map(function (k) { return k.trim(); });
+    }
+    function binderU(m) {
+      var r = m.codeRepository || '';
+      if (!r.includes('github.com')) return null;
+      var p = r.replace(/\/$/, '').split('/');
+      return 'https://mybinder.org/v2/gh/' + p[p.length - 2] + '/' + p[p.length - 1] + '/HEAD?urlpath=tree/notebook.ipynb';
+    }
+
+    document.getElementById('sshp-ov').addEventListener('click', function (e) {
+      if (e.target.id === 'sshp-ov') SSHPortal.close();
     });
-  } catch(e) { return []; }
-}
 
-async function searchDANS(q) {
-  try {
-    var r = await fetch('https://easy.dans.knaw.nl/solr/search?q=' + encodeURIComponent(q) + '&rows=4&wt=json');
-    var d = await r.json();
-    return (d.response && d.response.docs || []).map(function(doc) {
-      return {title: (doc.dc_title && doc.dc_title[0]) || 'Untitled', desc: (doc.dc_description && doc.dc_description[0]) || '', meta: (doc.dc_creator && doc.dc_creator[0]) || '', url: 'https://easy.dans.knaw.nl/ui/datasets/id/' + doc.sid, source: 'DANS EASY'};
-    });
-  } catch(e) { return []; }
-}
+    function generateMacLauncher(name, workdir, safe) {
+      var lines = [
+        '#!/bin/bash',
+        '# Double-click to launch "' + name + '" research environment',
+        '# Mac: right-click -> Open (first time only)',
+        '',
+        'DIR="$(cd "$(dirname "$0")" && pwd)"',
+        'echo "Launching: ' + name + '"',
+        '',
+        'if ! command -v ansible-playbook &> /dev/null; then',
+        '  echo "ERROR: Ansible not installed. Run: pip3 install ansible"',
+        '  read -p "Press Enter to exit..."',
+        '  exit 1',
+        'fi',
+        '',
+        'ansible-playbook "$DIR/playbook.yml"',
+        '',
+        'if [ $? -eq 0 ]; then',
+        '  cp "$DIR/notebook.ipynb" "$HOME/research/' + safe + '/notebook.ipynb" 2>/dev/null',
+        '  cd "$HOME/research/' + safe + '"',
+        '  python3 -m notebook notebook.ipynb',
+        'else',
+        '  echo "ERROR: Provisioning failed."',
+        '  read -p "Press Enter to exit..."',
+        'fi',
+      ];
+      return lines.join('\n');
+    }
 
-async function searchGutenberg(q) {
-  try {
-    var r = await fetch('https://gutendex.com/books?search=' + encodeURIComponent(q));
-    var d = await r.json();
-    return (d.results || []).slice(0, 6).map(function(b) {
-      return {title: b.title, desc: 'By ' + (b.authors.map(function(a) { return a.name; }).join(', ') || 'Unknown') + '. Languages: ' + b.languages.join(', ') + '.', meta: ((b.download_count || 0).toLocaleString()) + ' downloads', url: 'https://www.gutenberg.org/ebooks/' + b.id, dl: (b.formats && (b.formats['text/html'] || b.formats['application/epub+zip'])) || '', source: 'Project Gutenberg'};
-    });
-  } catch(e) { return []; }
-}
+    function generateWinLauncher(name, workdir, safe) {
+      return '@echo off\necho Launching: ' + name + '\necho.\nwhere ansible-playbook >nul 2>nul\nif %errorlevel% neq 0 (\n  echo ERROR: Ansible not installed. Run: pip3 install ansible\n  pause\n  exit /b 1\n)\nansible-playbook "%~dp0playbook.yml"\nif %errorlevel% equ 0 (\n  echo Environment ready! Opening notebook...\n  timeout /t 1 /nobreak >nul\n  cd /d "' + workdir + '"\n  python3 -m notebook notebook.ipynb\n) else (\n  echo ERROR: Provisioning failed.\n  pause\n)\n';
+    }
 
-async function searchZenodo(q) {
-  try {
-    var r = await fetch('https://zenodo.org/api/records?q=' + encodeURIComponent(q) + '&size=6&sort=mostrecent');
-    var d = await r.json();
-    return (d.hits && d.hits.hits || []).map(function(rec) {
-      return {title: (rec.metadata && rec.metadata.title) || 'Untitled', desc: (rec.metadata && rec.metadata.description) || '', meta: ((rec.metadata && rec.metadata.creators && rec.metadata.creators[0] && rec.metadata.creators[0].name) || '') + ' · ' + ((rec.metadata && rec.metadata.publication_date) || ''), url: (rec.links && rec.links.html) || 'https://zenodo.org/record/' + rec.id, source: 'Zenodo'};
-    });
-  } catch(e) { return []; }
-}
+    function generateNotebook(meta) {
+      var name = meta.name || 'Research Tool';
+      var desc = meta.description || '';
+      var lang = (Array.isArray(meta.programmingLanguage) ? meta.programmingLanguage[0] : meta.programmingLanguage) || {};
+      var langName = typeof lang === 'string' ? lang : (lang.name || 'Python');
+      var repo = meta.codeRepository || '';
+      var deps = (meta.softwareRequirements || []).map(function (d) {
+        return typeof d === 'string' ? d : (d.name || '');
+      }).filter(Boolean);
+      var depList = deps.map(function (d) { return '- `' + d + '`'; }).join('\n') || '- None declared';
+      var imports = deps.filter(function (d) {
+        return ['jupyter', 'ipykernel', 'notebook', 'jupyterlab'].indexOf(d.toLowerCase()) === -1;
+      }).map(function (d) { return 'import ' + d.replace(/-/g, '_').toLowerCase(); }).join('\n');
 
-function normL(raw) {
-  if (!raw) return [];
-  return (Array.isArray(raw) ? raw : [raw]).map(function(l) { return typeof l === 'string' ? l : (l && l.name) || ''; }).filter(Boolean);
-}
-function normK(raw) {
-  if (!raw) return [];
-  return Array.isArray(raw) ? raw : raw.split(',').map(function(k) { return k.trim(); });
-}
-function binderU(m) {
-  var r = m.codeRepository || '';
-  if (!r.includes('github.com')) return null;
-  var p = r.replace(/\/$/, '').split('/');
-  return 'https://mybinder.org/v2/gh/' + p[p.length-2] + '/' + p[p.length-1] + '/HEAD?urlpath=tree/notebook.ipynb';
-}
+      var cells = [
+        { type: 'markdown', source: '# ' + name + '\n\n' + desc + '\n\n| | |\n|---|---|\n| **Language** | ' + langName + ' |\n| **Repository** | ' + repo + ' |\n| **Dependencies** | |\n\n' + depList + '\n\n---\n*Auto-generated from `codemeta.json`*' },
+        { type: 'markdown', source: '## 1. Environment check' },
+        { type: 'code', source: 'import sys\nprint(f"Python {sys.version}")\nprint("Environment ready.")' },
+        { type: 'markdown', source: '## 2. Import dependencies' },
+        { type: 'code', source: imports || '# No importable dependencies declared' },
+        { type: 'markdown', source: '## 3. Start exploring\n\nAdd your analysis below.' },
+        { type: 'code', source: '# Your analysis starts here\n' }
+      ];
 
-document.getElementById('sshp-ov').addEventListener('click', function(e) {
-  if (e.target.id === 'sshp-ov') SSHPortal.close();
-});
+      var nb = {
+        nbformat: 4, nbformat_minor: 5,
+        metadata: { kernelspec: { display_name: 'Python 3', language: 'python', name: 'python3' } },
+        cells: cells.map(function (c, i) {
+          if (c.type === 'markdown') return { cell_type: 'markdown', id: 'cell' + i, metadata: {}, source: c.source };
+          return { cell_type: 'code', execution_count: null, id: 'cell' + i, metadata: {}, outputs: [], source: c.source };
+        })
+      };
+      return JSON.stringify(nb, null, 1);
+    }
 
-function generateMacLauncher(name, workdir, safe) {
-  var lines = [
-    '#!/bin/bash',
-    '# Double-click to launch "' + name + '" research environment',
-    '# Mac: right-click -> Open (first time only)',
-    '',
-    'DIR="$(cd "$(dirname "$0")" && pwd)"',
-    'echo "Launching: ' + name + '"',
-    '',
-    'if ! command -v ansible-playbook &> /dev/null; then',
-    '  echo "ERROR: Ansible not installed. Run: pip3 install ansible"',
-    '  read -p "Press Enter to exit..."',
-    '  exit 1',
-    'fi',
-    '',
-    'ansible-playbook "$DIR/playbook.yml"',
-    '',
-    'if [ $? -eq 0 ]; then',
-    '  cp "$DIR/notebook.ipynb" "$HOME/research/' + safe + '/notebook.ipynb" 2>/dev/null',
-    '  cd "$HOME/research/' + safe + '"',
-    '  python3 -m notebook notebook.ipynb',
-    'else',
-    '  echo "ERROR: Provisioning failed."',
-    '  read -p "Press Enter to exit..."',
-    'fi',
-  ];
-  return lines.join('\n');
-}
+    function generatePythonLauncher(safe) {
+      var script = [
+        'import subprocess, sys, pathlib, shutil',
+        'home = pathlib.Path.home()',
+        'here = pathlib.Path(__file__).parent',
+        'workdir = home / "research" / "' + safe + '"',
+        'workdir.mkdir(parents=True, exist_ok=True)',
+        'print("Provisioning environment...")',
+        'result = subprocess.run(["ansible-playbook", str(here / "playbook.yml")], check=False)',
+        'if result.returncode == 0:',
+        '    nb_src = here / "notebook.ipynb"',
+        '    nb_dst = workdir / "notebook.ipynb"',
+        '    if nb_src.exists():',
+        '        shutil.copy(nb_src, nb_dst)',
+        '    print("Opening notebook...")',
+        '    subprocess.run([sys.executable, "-m", "notebook", str(nb_dst)], cwd=str(workdir))',
+        'else:',
+        '    print("ERROR: Provisioning failed.")',
+        '    input("Press Enter to exit...")',
+      ];
+      return script.join('\n');
+    }
 
-function generateWinLauncher(name, workdir, safe) {
-  return '@echo off\necho Launching: ' + name + '\necho.\nwhere ansible-playbook >nul 2>nul\nif %errorlevel% neq 0 (\n  echo ERROR: Ansible not installed. Run: pip3 install ansible\n  pause\n  exit /b 1\n)\nansible-playbook "%~dp0playbook.yml"\nif %errorlevel% equ 0 (\n  echo Environment ready! Opening notebook...\n  timeout /t 1 /nobreak >nul\n  cd /d "' + workdir + '"\n  python3 -m notebook notebook.ipynb\n) else (\n  echo ERROR: Provisioning failed.\n  pause\n)\n';
-}
-
-function generateNotebook(meta) {
-  var name = meta.name || 'Research Tool';
-  var desc = meta.description || '';
-  var lang = (Array.isArray(meta.programmingLanguage) ? meta.programmingLanguage[0] : meta.programmingLanguage) || {};
-  var langName = typeof lang === 'string' ? lang : (lang.name || 'Python');
-  var repo = meta.codeRepository || '';
-  var deps = (meta.softwareRequirements || []).map(function(d) {
-    return typeof d === 'string' ? d : (d.name || '');
-  }).filter(Boolean);
-  var depList = deps.map(function(d) { return '- `' + d + '`'; }).join('\n') || '- None declared';
-  var imports = deps.filter(function(d) {
-    return ['jupyter','ipykernel','notebook','jupyterlab'].indexOf(d.toLowerCase()) === -1;
-  }).map(function(d) { return 'import ' + d.replace(/-/g,'_').toLowerCase(); }).join('\n');
-
-  var cells = [
-    {type:'markdown', source:'# ' + name + '\n\n' + desc + '\n\n| | |\n|---|---|\n| **Language** | ' + langName + ' |\n| **Repository** | ' + repo + ' |\n| **Dependencies** | |\n\n' + depList + '\n\n---\n*Auto-generated from `codemeta.json`*'},
-    {type:'markdown', source:'## 1. Environment check'},
-    {type:'code', source:'import sys\nprint(f"Python {sys.version}")\nprint("Environment ready.")'},
-    {type:'markdown', source:'## 2. Import dependencies'},
-    {type:'code', source: imports || '# No importable dependencies declared'},
-    {type:'markdown', source:'## 3. Start exploring\n\nAdd your analysis below.'},
-    {type:'code', source:'# Your analysis starts here\n'}
-  ];
-
-  var nb = {
-    nbformat: 4, nbformat_minor: 5,
-    metadata: {kernelspec: {display_name: 'Python 3', language: 'python', name: 'python3'}},
-    cells: cells.map(function(c, i) {
-      if (c.type === 'markdown') return {cell_type:'markdown', id:'cell'+i, metadata:{}, source: c.source};
-      return {cell_type:'code', execution_count:null, id:'cell'+i, metadata:{}, outputs:[], source: c.source};
-    })
-  };
-  return JSON.stringify(nb, null, 1);
-}
-
-function generatePythonLauncher(safe) {
-  var script = [
-    'import subprocess, sys, pathlib, shutil',
-    'home = pathlib.Path.home()',
-    'here = pathlib.Path(__file__).parent',
-    'workdir = home / "research" / "' + safe + '"',
-    'workdir.mkdir(parents=True, exist_ok=True)',
-    'print("Provisioning environment...")',
-    'result = subprocess.run(["ansible-playbook", str(here / "playbook.yml")], check=False)',
-    'if result.returncode == 0:',
-    '    nb_src = here / "notebook.ipynb"',
-    '    nb_dst = workdir / "notebook.ipynb"',
-    '    if nb_src.exists():',
-    '        shutil.copy(nb_src, nb_dst)',
-    '    print("Opening notebook...")',
-    '    subprocess.run([sys.executable, "-m", "notebook", str(nb_dst)], cwd=str(workdir))',
-    'else:',
-    '    print("ERROR: Provisioning failed.")',
-    '    input("Press Enter to exit...")',
-  ];
-  return script.join('\n');
-}
-
-function generateReadme(name, workdir) {
-  return 'HOW TO LAUNCH: ' + name + ' Research Environment\n' +
-    '='.repeat(50) + '\n\n' +
-    'QUICKEST WAY (double-click, no terminal):\n' +
-    '  Double-click launch.py\n' +
-    '  (Python files open without Mac security warnings)\n\n' +
-    'REQUIREMENTS:\n' +
-    '  - Python 3.10+\n' +
-    '  - Ansible: pip3 install ansible\n\n' +
-    'MANUAL WAY (terminal):\n' +
-    '  1. ansible-playbook playbook.yml\n' +
-    '  2. cd ' + workdir + '\n' +
-    '  3. python3 -m notebook notebook.ipynb\n\n' +
-    'All steps driven automatically from codemeta.json.\n';
-}
-</script>
+    function generateReadme(name, workdir) {
+      return 'HOW TO LAUNCH: ' + name + ' Research Environment\n' +
+        '='.repeat(50) + '\n\n' +
+        'QUICKEST WAY (double-click, no terminal):\n' +
+        '  Double-click launch.py\n' +
+        '  (Python files open without Mac security warnings)\n\n' +
+        'REQUIREMENTS:\n' +
+        '  - Python 3.10+\n' +
+        '  - Ansible: pip3 install ansible\n\n' +
+        'MANUAL WAY (terminal):\n' +
+        '  1. ansible-playbook playbook.yml\n' +
+        '  2. cd ' + workdir + '\n' +
+        '  3. python3 -m notebook notebook.ipynb\n\n' +
+        'All steps driven automatically from codemeta.json.\n';
+    }
+  </script>
 </body>
+
 </html>
