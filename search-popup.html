@@ -248,6 +248,7 @@ var SSHPortal = {
       'launch.command': generateMacLauncher(name, workdir, safe),
       'launch.bat': generateWinLauncher(name, workdir, safe),
       'HOW_TO_LAUNCH.txt': generateReadme(name, workdir),
+      'setup_mac.command': generateSetupScript(safe),
       'notebook.ipynb': generateNotebook(meta)
     };
     // Use JSZip to bundle everything into one zip
@@ -436,6 +437,24 @@ function generateNotebook(meta) {
     })
   };
   return JSON.stringify(nb, null, 1);
+}
+
+function generateSetupScript(safe) {
+  var lines = [
+    '#!/bin/bash',
+    '# Run this ONCE to set up the launcher',
+    '# After this, just double-click launch.command',
+    '',
+    'DIR="$(cd "$(dirname "$0")" && pwd)"',
+    'chmod +x "$DIR/launch.command"',
+    'xattr -d com.apple.quarantine "$DIR/launch.command" 2>/dev/null',
+    'xattr -d com.apple.quarantine "$DIR/setup_mac.command" 2>/dev/null',
+    '',
+    'echo "Setup complete! You can now double-click launch.command"',
+    'echo "Press Enter to close this window."',
+    'read'
+  ];
+  return lines.join('\n');
 }
 
 function generateReadme(name, workdir) {
