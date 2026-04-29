@@ -441,9 +441,12 @@ function generateNotebook(meta) {
 function generateReadme(name, workdir) {
   return 'HOW TO LAUNCH: ' + name + ' Research Environment\n' +
     '='.repeat(50) + '\n\n' +
-    'QUICKEST WAY (no terminal needed):\n' +
+    'STEP 1 — One-time Mac setup (terminal required just once):\n' +
+    '  Open Terminal and run these two commands:\n' +
+    '  chmod +x launch.command\n' +
+    '  xattr -d com.apple.quarantine launch.command\n\n' +
+    'STEP 2 — Launch (no terminal needed from now on):\n' +
     '  Mac:     Double-click launch.command\n' +
-    '           (First time: right-click \u2192 Open to allow)\n' +
     '  Windows: Double-click launch.bat\n\n' +
     'MANUAL WAY (terminal):\n' +
     '  1. ansible-playbook playbook.yml\n' +
@@ -453,7 +456,7 @@ function generateReadme(name, workdir) {
     '  - Python 3.10+\n' +
     '  - Ansible: pip3 install ansible\n\n' +
     'All steps are driven automatically from codemeta.json.\n' +
-    'No manual configuration required.\n';
+    'No manual configuration required beyond the one-time setup above.\n';
 }
 </script>
 </body>
