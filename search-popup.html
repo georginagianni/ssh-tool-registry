@@ -455,12 +455,31 @@ function generateNotebook(meta) {
 
   // Add tool-specific cells
   if (name === 'trafilatura') {
+    var tCode3 = 'import trafilatura\n';
+    tCode3 += 'url = "https://en.wikipedia.org/wiki/Digital_humanities"\n';
+    tCode3 += 'downloaded = trafilatura.fetch_url(url)\n';
+    tCode3 += 'text = trafilatura.extract(downloaded)\n';
+    tCode3 += 'print(text[:500])';
     cells.push({type: 'markdown', source: '## 3. Extract text from a URL\n\nReplace the URL below with your own and run the cell.'});
-    cells.push({type: 'code', source: 'import trafilatura\n\n# Replace this URL with your own\nurl = 'https://en.wikipedia.org/wiki/Digital_humanities'\n\ndownloaded = trafilatura.fetch_url(url)\ntext = trafilatura.extract(downloaded)\nprint(text[:500])'});
-    cells.push({type: 'markdown', source: '## 4. Search for a keyword across multiple URLs\n\nReplace the URLs and keyword below — the tool will find relevant sentences automatically.'});
-    cells.push({type: 'code', source: '# Replace the URLs and keyword below\nurls = [\n    'https://en.wikipedia.org/wiki/Digital_humanities',\n    'https://en.wikipedia.org/wiki/Computational_linguistics',\n]\nkeyword = 'digital humanities'\n\ncorpus = ""\nprint(f'Searching for: "{keyword}"\n')\nfor url in urls:\n    downloaded = trafilatura.fetch_url(url)\n    text = trafilatura.extract(downloaded) or ""\n    corpus += text + " "\n    sentences = [s.strip() for s in text.split(".") if keyword.lower() in s.lower()]\n    if sentences:\n        print(f'From {url[:50]}:')\n        for s in sentences[:2]:\n            print(f'  → {s}')\n        print()\n\nwith open('corpus.txt', 'w') as f:\n    f.write(corpus)\nprint(f'Done — corpus.txt saved with {len(corpus.split())} words')'});
+    cells.push({type: 'code', source: tCode3});
+    var tCode4 = 'urls = [\n';
+    tCode4 += '    "https://en.wikipedia.org/wiki/Digital_humanities",\n';
+    tCode4 += '    "https://en.wikipedia.org/wiki/Computational_linguistics",\n';
+    tCode4 += ']\n';
+    tCode4 += 'keyword = "digital humanities"\n';
+    tCode4 += 'corpus = ""\n';
+    tCode4 += 'for url in urls:\n';
+    tCode4 += '    d = trafilatura.fetch_url(url)\n';
+    tCode4 += '    t = trafilatura.extract(d) or ""\n';
+    tCode4 += '    corpus += t\n';
+    tCode4 += '    hits = [s.strip() for s in t.split(".") if keyword.lower() in s.lower()]\n';
+    tCode4 += '    if hits: print(url[:40]); [print(" ->", s) for s in hits[:2]]\n';
+    tCode4 += 'open("corpus.txt","w").write(corpus)\n';
+    tCode4 += 'print("Done:", len(corpus.split()), "words")';
+    cells.push({type: 'markdown', source: '## 4. Build corpus and search\n\nReplace the URLs and keyword, then run.'});
+    cells.push({type: 'code', source: tCode4});
   }
-  var nb = {
+    var nb = {
     nbformat: 4, nbformat_minor: 5,
     metadata: {kernelspec: {display_name: 'Python 3', language: 'python', name: 'python3'}},
     cells: cells.map(function(c, i) {
