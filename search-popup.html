@@ -453,6 +453,13 @@ function generateNotebook(meta) {
     {type:'code', source:'# Your analysis starts here\n'}
   ];
 
+  // Add tool-specific cells
+  if (name === 'trafilatura') {
+    cells.push({type: 'markdown', source: '## 3. Extract text from a URL\n\nReplace the URL below with your own and run the cell.'});
+    cells.push({type: 'code', source: 'import trafilatura\n\n# Replace this URL with your own\nurl = 'https://en.wikipedia.org/wiki/Digital_humanities'\n\ndownloaded = trafilatura.fetch_url(url)\ntext = trafilatura.extract(downloaded)\nprint(text[:500])'});
+    cells.push({type: 'markdown', source: '## 4. Search for a keyword across multiple URLs\n\nReplace the URLs and keyword below — the tool will find relevant sentences automatically.'});
+    cells.push({type: 'code', source: '# Replace the URLs and keyword below\nurls = [\n    'https://en.wikipedia.org/wiki/Digital_humanities',\n    'https://en.wikipedia.org/wiki/Computational_linguistics',\n]\nkeyword = 'digital humanities'\n\ncorpus = ""\nprint(f'Searching for: "{keyword}"\n')\nfor url in urls:\n    downloaded = trafilatura.fetch_url(url)\n    text = trafilatura.extract(downloaded) or ""\n    corpus += text + " "\n    sentences = [s.strip() for s in text.split(".") if keyword.lower() in s.lower()]\n    if sentences:\n        print(f'From {url[:50]}:')\n        for s in sentences[:2]:\n            print(f'  → {s}')\n        print()\n\nwith open('corpus.txt', 'w') as f:\n    f.write(corpus)\nprint(f'Done — corpus.txt saved with {len(corpus.split())} words')'});
+  }
   var nb = {
     nbformat: 4, nbformat_minor: 5,
     metadata: {kernelspec: {display_name: 'Python 3', language: 'python', name: 'python3'}},
