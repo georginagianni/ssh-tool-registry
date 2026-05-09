@@ -491,6 +491,15 @@ function generateNotebook(meta) {
     roEasy += 'crate.write("my_crate")\n';
     roEasy += 'print(f"RO-Crate created for {your_name} at {your_institution}")\n';
     roEasy += 'print("Metadata saved to my_crate/ro-crate-metadata.json")';
+    var roVerify = 'import json\n';
+    roVerify += 'with open("my_crate/ro-crate-metadata.json", "r") as f:\n';
+    roVerify += '    crate_data = json.load(f)\n';
+    roVerify += 'print("=== RO-Crate Contents ===")\n';
+    roVerify += 'print(f"Entities: {len(crate_data.get(\"@graph\", []))}")\n';
+    roVerify += 'for entity in crate_data.get("@graph", []):\n';
+    roVerify += '    etype = entity.get("@type", "unknown")\n';
+    roVerify += '    ename = entity.get("name", entity.get("@id", ""))\n';
+    roVerify += '    print(f"  [{etype}] {ename}")';
     var roUpload = 'import ipywidgets as widgets\n';
     roUpload += 'from IPython.display import display\n';
     roUpload += 'upload = widgets.FileUpload(multiple=False)\n';
@@ -506,11 +515,25 @@ function generateNotebook(meta) {
     roHard += '    print(f"Added {fname} to RO-Crate and saved.")\n';
     roHard += 'else:\n';
     roHard += '    print("No file uploaded.")';
+    var roVerifyHard = 'import json\n';
+    roVerifyHard += 'with open("my_crate/ro-crate-metadata.json", "r") as f:\n';
+    roVerifyHard += '    crate_data = json.load(f)\n';
+    roVerifyHard += 'print("=== Full RO-Crate Contents ===")\n';
+    roVerifyHard += 'print(f"Entities: {len(crate_data.get(\"@graph\", []))}")\n';
+    roVerifyHard += 'for entity in crate_data.get("@graph", []):\n';
+    roVerifyHard += '    etype = entity.get("@type", "unknown")\n';
+    roVerifyHard += '    ename = entity.get("name", entity.get("@id", ""))\n';
+    roVerifyHard += '    print(f"  [{etype}] {ename}")\n';
+    roVerifyHard += 'print("\\nFull metadata saved to my_crate/ro-crate-metadata.json")';
     cells.push({type: 'markdown', source: '## 3. Create your RO-Crate\n\nFill in your name, institution and dataset title below, then run.'});
     cells.push({type: 'code', source: roEasy});
-    cells.push({type: 'markdown', source: '## 4. Add a file to your crate\n\nUpload any research file to include it in your RO-Crate.'});
+    cells.push({type: 'markdown', source: '## 4. Verify your crate\n\nRun this cell to inspect the metadata that was created.'});
+    cells.push({type: 'code', source: roVerify});
+    cells.push({type: 'markdown', source: '## 5. Add a research file to your crate\n\nUpload any research file to include it in your RO-Crate.'});
     cells.push({type: 'code', source: roUpload});
     cells.push({type: 'code', source: roHard});
+    cells.push({type: 'markdown', source: '## 6. Verify the complete crate\n\nRun this cell to confirm your file was added with proper metadata.'});
+    cells.push({type: 'code', source: roVerifyHard});
   }
     if (name === 'pycldf') {
     var pyEasy = 'import pycldf, urllib.request, zipfile, pathlib\n';
