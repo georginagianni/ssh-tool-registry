@@ -164,6 +164,7 @@ var SSHPortal = {
       pb.style.width = Math.round(i / REPOS.length * 90) + '%';
       var m = await fetchMeta(REPOS[i]);
       if (m) ms.push(m);
+      await new Promise(r => setTimeout(r, 300));
     }
     pb.style.width = '100%';
     cache = ms;
