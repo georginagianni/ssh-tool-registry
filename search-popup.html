@@ -542,7 +542,8 @@ function generateNotebook(meta) {
     pyEasy += 'urllib.request.urlretrieve(url, "cldf.zip")\n';
     pyEasy += 'with zipfile.ZipFile("cldf.zip") as z: z.extractall("cldf_data")\n';
     pyEasy += 'ds = pycldf.Dataset.from_metadata(list(pathlib.Path("cldf_data").rglob("*.json"))[0])\n';
-    pyEasy += 'print("Dataset loaded:", list(ds.components))';
+    pyEasy += 'print("Dataset loaded successfully.")\n';
+    pyEasy += 'print("Components:", list(ds.components))';
     var pyHard = 'import pandas as pd, matplotlib.pyplot as plt\n';
     pyHard += 'langs = list(ds["LanguageTable"])\n';
     pyHard += 'df = pd.DataFrame(langs)\n';
@@ -552,10 +553,20 @@ function generateNotebook(meta) {
     pyHard += 'plt.title("Top 10 languages in dataset")\n';
     pyHard += 'plt.tight_layout()\n';
     pyHard += 'plt.show()';
-    cells.push({type: 'markdown', source: '## 3. Load a CLDF dataset\n\nThis cell downloads and loads a sample cross-linguistic dataset automatically.'});
+    var pyFamily = '# How many unique language families are represented?\n';
+    pyFamily += 'if "Family_ID" in df.columns:\n';
+    pyFamily += '    print(df["Family_ID"].nunique(), "language families")\n';
+    pyFamily += '    print(df["Family_ID"].value_counts().head(5))\n';
+    pyFamily += 'else:\n';
+    pyFamily += '    available = list(df.columns)\n';
+    pyFamily += '    print("Available columns:", available)\n';
+    pyFamily += '    print(df[available[1]].value_counts().head(5))';
+    cells.push({type: 'markdown', source: '## 3. Load a CLDF dataset\n\nThis cell downloads and loads a sample cross-linguistic dataset automatically. No input required.'});
     cells.push({type: 'code', source: pyEasy});
-    cells.push({type: 'markdown', source: '## 4. Analyse language data\n\nRun this cell to see a frequency chart of languages in the dataset.'});
+    cells.push({type: 'markdown', source: '## 4. Analyse language distribution\n\nRun this cell to see a frequency chart of languages in the dataset.'});
     cells.push({type: 'code', source: pyHard});
+    cells.push({type: 'markdown', source: '## 5. Explore language families\n\nRun this cell to see how many language families are represented and which are most common.'});
+    cells.push({type: 'code', source: pyFamily});
   }
     if (name === 'foliapy') {
     var foliaEasy = 'import folia.main as folia\n';
