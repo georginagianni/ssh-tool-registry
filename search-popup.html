@@ -53,7 +53,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f4f3ef;display:f
 .saA:hover{background:#04342C;color:#E1F5EE}
 .sempty{text-align:center;padding:2rem;color:#aaa;font-size:13px;line-height:1.7}
 .shint{font-size:12px;color:#aaa;line-height:1.6;padding:1rem;background:#f9f8f5;border-radius:8px;border:.5px solid #e8e6df}
-.sfooter{padding:.8rem 1.4rem;border-top:.5px solid #e8e6df;font-size:11px;color:#aaa;flex-shrink:0;display:flex;justify-content:space-between}
+.sfooter{padding:.8rem 1.4rem;border-top:.5px solid #e8e6df;font-size:11px;color:#aaa;flex-shrink:0;display:flex;justify-content:space-between}.sread{font-size:11px;color:#534AB7;text-decoration:none;margin-left:2px}.sread:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -195,7 +195,7 @@ var SSHPortal = {
         '<div class="sct"><div><div class="scn">' + (t.name || t._r) + '</div>' +
         '<div class="scm">' + (langs.join(',') || '—') + ' · v' + (t.version || '—') + '</div></div>' +
         '<span class="spill p0">GitHub</span></div>' +
-        '<div class="scd">' + (t.description || '').slice(0, 160) + ((t.description || '').length > 160 ? '...' : '') + '</div>' +
+        '<div class="scd">' +((t.description || '').length > 160 ? (t.description.slice(0, 160) + '<span class="sdots">... </span><span class="smore" style="display:none">' + t.description.slice(160) + '</span><a class="sread" href="#" onclick="var p=this.parentNode;p.querySelector(\'.smore\').style.display=p.querySelector(\'.smore\').style.display==\'none\'?\'inline\':\'none\';p.querySelector(\'.sdots\').style.display=p.querySelector(\'.sdots\').style.display==\'none\'?\'inline\':\'none\';this.textContent=this.textContent==\'Read more\'?\'Read less\':\'Read more\';return false;">Read more</a>') :(t.description || '')) +'</div>' +
         '<div class="scf">' +
         '<a class="sa" href="' + repo + '" target="_blank">GitHub</a>' +
         (bu ? '<a class="sa saL" href="' + bu + '" target="_blank">Launch in Binder</a>' : '') +
