@@ -558,7 +558,27 @@
       err: function (m) {
         document.getElementById('sshp-res').innerHTML = '<div class="sempty">' + m + '</div>';
       },
-      downloadAnsible: async function (repo, event) {
+    
+  fetchNotebook: async function(safe) {
+    var map = {
+      'text_analysis_demo': 'text_analysis_demo.ipynb',
+      'cow_csvw': 'cow_csvw.ipynb',
+      'cffconvert': 'cffconvert.ipynb',
+      'trafilatura': 'trafilatura.ipynb',
+      'ro_crate_py': 'ro_crate_py.ipynb',
+      'pycldf': 'pycldf.ipynb',
+      'foliapy': 'foliapy.ipynb'
+    };
+    var fname = map[safe];
+    if (!fname) return '{"nbformat":4,"nbformat_minor":5,"metadata":{},"cells":[]}';
+    try {
+      var r = await fetch('https://raw.githubusercontent.com/georginagianni/ssh-tool-registry/main/notebooks/' + fname);
+      if (r.ok) return await r.text();
+    } catch(e) {}
+    return '{"nbformat":4,"nbformat_minor":5,"metadata":{},"cells":[]}';
+  },
+
+  downloadAnsible: async function (repo, event) {
         event.stopPropagation();
         var btn = event.target;
         btn.textContent = 'Generating...';
@@ -574,7 +594,7 @@
           'launch.bat': generateWinLauncher(name, workdir, safe),
           'HOW_TO_LAUNCH.txt': generateReadme(name, workdir),
           'launch.py': generatePythonLauncher(safe),
-          'notebook.ipynb': generateNotebook(meta)
+          'notebook.ipynb': await SSHPortal.fetchNotebook(safe)
         };
         // Use JSZip to bundle everything into one zip
         var script = document.createElement('script');
