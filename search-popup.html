@@ -572,7 +572,7 @@
     var fname = map[safe];
     if (!fname) return '{"nbformat":4,"nbformat_minor":5,"metadata":{},"cells":[]}';
     try {
-      var r = await fetch('https://raw.githubusercontent.com/georginagianni/ssh-tool-registry/main/notebooks/' + fname);
+      var r = await fetch('https://raw.githubusercontent.com/georginagianni/ssh-tool-registry/main/notebooks/' + fname + '?t=' + Date.now());
       if (r.ok) return await r.text();
     } catch(e) {}
     return '{"nbformat":4,"nbformat_minor":5,"metadata":{},"cells":[]}';
