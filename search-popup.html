@@ -242,7 +242,10 @@ var SSHPortal = {
     var btn = event.target;
     btn.textContent = 'Generating...';
     btn.disabled = true;
-    var meta = await fetchMeta(repo);
+    // Use cached metadata if available, otherwise fetch
+    var meta = null;
+    if (cache) { meta = cache.find(function(m) { return m._r === repo; }); }
+    if (!meta) { meta = await fetchMeta(repo); }
     if (!meta) { btn.textContent = 'Failed'; btn.disabled = false; return; }
     var name = meta.name || meta._r || 'research-tool';
     var safe = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
