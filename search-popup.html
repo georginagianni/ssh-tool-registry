@@ -456,6 +456,10 @@ function generateNotebook(meta) {
 
   // Add tool-specific cells
   if (name === 'cffconvert') {
+    var cffInstall = 'import subprocess, sys\n';
+    cffInstall += '# Install cffconvert if not already installed\n';
+    cffInstall += 'subprocess.run([sys.executable, "-m", "pip", "install", "cffconvert", "-q"])\n';
+    cffInstall += 'print("cffconvert ready.")';
     var cffEasy = 'import subprocess\n';
     cffEasy += '# Fill in your details below\n';
     cffEasy += 'title = "My Research Tool"\n';
@@ -473,9 +477,11 @@ function generateNotebook(meta) {
     cffHard += '    with open(f"citation.{fmt}","w") as f: f.write(r.stdout)\n';
     cffHard += '    print(f"Done: {fmt}")\n';
     cffHard += 'print("All formats saved.")';
-    cells.push({type: 'markdown', source: '## 3. Fill in your details\n\nReplace your name, title, version and date below, then run.'});
+    cells.push({type: 'markdown', source: '## 3. Install cffconvert\n\nRun this cell first to make sure cffconvert is installed.'});
+    cells.push({type: 'code', source: cffInstall});
+    cells.push({type: 'markdown', source: '## 4. Fill in your details\n\nReplace your name, title, version and date below, then run.'});
     cells.push({type: 'code', source: cffEasy});
-    cells.push({type: 'markdown', source: '## 4. Convert to all citation formats\n\nRun this cell to export to BibTeX, APA, RIS and codemeta automatically.'});
+    cells.push({type: 'markdown', source: '## 5. Convert to all citation formats\n\nRun this cell to export to BibTeX, APA, RIS and codemeta automatically.'});
     cells.push({type: 'code', source: cffHard});
   }
     if (name === 'ro-crate-py') {
