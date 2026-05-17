@@ -731,6 +731,10 @@
         'georginagianni/text-analysis-demo',
         'CLARIAH/COW'
       ];
+      var binderOverrides = {
+        'CLARIAH/COW': 'https://mybinder.org/v2/gh/georginagianni/ssh-tool-registry/main?urlpath=tree/notebooks/cow_csvw.ipynb'
+      };
+      if (binderOverrides[owner + '/' + repo]) return binderOverrides[owner + '/' + repo];
       if (!binderReady.includes(owner + '/' + repo)) return null;
       return 'https://mybinder.org/v2/gh/' + owner + '/' + repo + '/HEAD?urlpath=tree/notebook.ipynb';
     }
