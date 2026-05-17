@@ -2,3 +2,4 @@ cow-csvw
 rdflib
 pandas
 ipywidgets
+cow-csvw
