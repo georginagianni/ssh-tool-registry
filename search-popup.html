@@ -766,21 +766,18 @@
         return ['jupyter', 'ipykernel', 'notebook', 'jupyterlab'].indexOf(d.toLowerCase()) === -1;
       }).map(function (d) { return 'import ' + d.replace(/-/g, '_').toLowerCase(); }).join('\n');
 
+      var specificTool = ['cffconvert', 'cow-csvw', 'trafilatura', 'ro-crate-py', 'pycldf', 'foliapy'].indexOf(safe) !== -1;
       var cells = [
-        { type: 'markdown', source: '# ' + name + '\n\n' + desc + '\n\n| | |\n|---|---|\n| **Language** | ' + langName + ' |\n| **Repository** | ' + repo + ' |\n| **Dependencies** | |\n\n' + depList + '\n\n---\n*Auto-generated from `codemeta.json`*' },
-        { type: 'markdown', source: '## 1. Environment check' },
-        { type: 'code', source: 'import sys\nprint(f"Python {sys.version}")\nprint("Environment ready.")' },
-        { type: 'markdown', source: '## 2. Import dependencies' },
-        { type: 'code', source: imports || '# No importable dependencies declared' },
-        { type: 'markdown', source: '## 3. Start exploring\n\nAdd your analysis below.' },
-        { type: 'code', source: '# Your analysis starts here\n' }
+        { type: 'markdown', source: '# ' + name + '\n\n' + desc + '\n\n| | |\n|---|---|\n| **Language** | ' + langName + ' |\n| **Repository** | ' + repo + ' |\n| **Dependencies** | |\n\n' + depList + '\n\n---\n*Auto-generated from `codemeta.json`*' }
       ];
-
-      // Add tool-specific cells
-      if (['cffconvert', 'cow-csvw', 'trafilatura', 'ro-crate-py', 'pycldf', 'foliapy'].indexOf(safe) !== -1) {
-        cells = [cells[0]];
+      if (!specificTool) {
+        cells.push({ type: 'markdown', source: '## 1. Environment check' });
+        cells.push({ type: 'code', source: 'import sys\nprint(f"Python {sys.version}")\nprint("Environment ready.")' });
+        cells.push({ type: 'markdown', source: '## 2. Import dependencies' });
+        cells.push({ type: 'code', source: imports || '# No importable dependencies declared' });
+        cells.push({ type: 'markdown', source: '## 3. Start exploring\n\nAdd your analysis below.' });
+        cells.push({ type: 'code', source: '# Your analysis starts here\n' });
       }
-      if (['cffconvert','cow-csvw','trafilatura','ro-crate-py','pycldf','foliapy'].indexOf(safe) !== -1) { cells = [cells[0]]; }
   if (name === 'cffconvert') {
         var cffEasy = 'import subprocess\n';
         cffEasy += '# Fill in your details below\n';
