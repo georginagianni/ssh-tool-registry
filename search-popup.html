@@ -593,6 +593,7 @@
           'launch.command': generateMacLauncher(name, workdir, safe),
           'launch.bat': generateWinLauncher(name, workdir, safe),
           'HOW_TO_LAUNCH.txt': generateReadme(name, workdir),
+      'launch_windows.bat': '@echo off\npython launch.py\npause',
           'launch.py': generatePythonLauncher(safe),
           'notebook.ipynb': await SSHPortal.fetchNotebook(safe)
         };
